@@ -111,11 +111,7 @@ server <- function(input, output) {
         mutate(projected_bed_per_person =  icu / n_bed_per_person )
     
     chime_lookup <- chime_lookup %>%
-        filter(!is.infinite(projected_bed_per_person)) # %>%
-        #group_by(team_type, day) %>%
-        #mutate(rnk = rank(n_bed_per_person, ties.method = "first")) %>%
-        #ungroup() %>%
-        #mutate(ord_new = fct_reorder2(role, rnk, projected_bed_per_person))
+        filter(!is.infinite(projected_bed_per_person))
 }
 
 data <- reactiveVal(NULL)
@@ -146,13 +142,7 @@ data2 <- reactiveVal(NULL)
             return(NULL)
         
         enable("generateButton")
-        
-        #tmpdf2 <- read_csv(
-        #    inFile$datapath,
-        #    col_names = T,
-        #    local = locale(encoding = "latin1"))
-        
-        
+
         tmpdf2 <- read_xlsx(
             inFile$datapath)
         
