@@ -138,7 +138,7 @@ server <- function(input, output) {
             return(NULL)
         
         enable("generateButton")
-        
+
         tmpdf <- read_csv(
             inFile$datapath,
             col_names = T)
