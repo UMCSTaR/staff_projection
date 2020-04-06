@@ -16,7 +16,7 @@ ui <- fluidPage(
     
     titlePanel("Projected Staffing Demand"),
     ("This application is intended to work with a"), strong("projected census"), ("file from CHIME (e.g. 2020-04-02_projected_census.csv)"),
-    ("along with a"), strong("staffing tables"), ("file (e.g., staff_tabel.xlsx) template."), em("The tools at the top-right of the figure can help you navigate the resulting graph."),
+    ("along with a"), strong("staffing tables"), ("file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template."), em("The tools at the top-right of the figure can help you navigate the resulting graph."),
 
     hr(),
     
