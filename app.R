@@ -44,8 +44,11 @@ ui <- fluidPage(
   hr(),
   
   sidebarLayout(
+    
+
     column(
       3,
+
       h4("Inputs"),
       
       fileInput(
@@ -56,7 +59,22 @@ ui <- fluidPage(
                    "text/comma-separated-values,text/plain",
                    ".csv")
       ),
-      #hr(),
+      
+      hr(),
+      
+      h4("Staffing Ratio"),
+      
+      p(strong("Option1: Edit Staffing Ratios")),
+      actionButton("update_gen", "Edit Staffing Ratios",
+                   icon("user-md"),
+                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+      
+      
+      br(),
+      br(),
+
+      p(strong("Option2: Upload Staffing Ratios File")),
+      
       fileInput(
         "team_in",
         "Staffing Ratios (.xlsx)",
@@ -66,9 +84,9 @@ ui <- fluidPage(
       #hr(),
       # actionButton("generateButton", label = "Generate Plot"),
       
-      hr(),
+      # hr(),
       
-      downloadButton("downloadData", "Download Combined File")
+      # downloadButton("downloadData", "Download Combined File")
     ),
     
     mainPanel(
@@ -133,6 +151,10 @@ ui <- fluidPage(
           
           br(),
           
+          downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
+                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+          
+          
           h4("Non-ICU"),
           
           div(rHandsontableOutput("x2"), style = "font-size: 120%"),
@@ -140,9 +162,10 @@ ui <- fluidPage(
           br(),
           
           
-          downloadButton("downloadData_all_ratio", "Download Staffing Ratios",
-                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+          downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
+                        style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
           
+           
           
           column(
             12,
@@ -350,10 +373,7 @@ server <- function(input, output, session) {
     })
     
     # plots -------
-    
-    observeEvent(input$generateButton, {
-      updateTabsetPanel(session, "inTabset",selected = "Normal")
-    })
+
     
     output$plot_crisis <- renderPlotly({
       p <-  ggplot(display_table() %>%
@@ -366,7 +386,9 @@ server <- function(input, output, session) {
              colour = "Roles",
              caption = "Estimates from CHIME and user-inputted ratios") +
         theme_bw() +
-        facet_wrap(~ team_type, scales = "free", ncol = 4)
+        # facet_wrap(~ team_type, scales = "free", ncol = 4)
+        facet_wrap(~ team_type, ncol = 4) +
+        scale_y_continuous(trans = "log", breaks = c(50,100,200, 300))
       
       fig <- ggplotly(p)
       
@@ -386,13 +408,47 @@ server <- function(input, output, session) {
                colour = "Roles",
                caption = "Estimates from CHIME and user-inputted ratios") +
           theme_bw() +
-          facet_wrap(~ team_type, scales = "free", ncol = 4)
+          # facet_wrap(~ team_type, scales = "free", ncol = 4)
+          facet_wrap(~ team_type, ncol = 4) +
+          scale_y_continuous(trans = "log", , breaks = c(5, 10, 50,100,200, 300))
+        
 
         fig <- ggplotly(p)
 
         fig
 
       })
+    
+    # buttons ------
+    observeEvent(input$generateButton, {
+      updateTabsetPanel(session, "inTabset", selected = "Normal")
+    })
+    
+    observeEvent(input$update_gen, {
+      updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
+    })
+    
+    
+   
+    output$downloadData_icu_ratio <- downloadHandler(
+      filename = function() {
+        paste('ICU_Staffing_role_and_ratio', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        finalDF <- hot_to_r(input$x1)
+        write.csv(finalDF, con)
+      }
+    )
+    
+    output$downloadData_norm <- downloadHandler(
+      filename = function() {
+        paste('staffing_normal', Sys.Date(), '.csv', sep='')
+      },
+      content = function(con) {
+        finalDF <- hot_to_r(input$x2)
+        write.csv(norm_staff_table(), con)
+      }
+    )
     
     
 }
