@@ -84,3 +84,17 @@ chime_lookup <- chime_lookup %>%
                                                   projected_bed_icu, NA)),
          projected_bed_per_person = ifelse(is.infinite(projected_bed_per_person), 0, projected_bed_per_person))
 
+
+p = ggplot(chime_lookup %>%
+         filter(team_type == "ICU Crisis" | team_type == "General Crisis"), 
+       aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
+  geom_line() +
+  labs(title = "Projected Staffing Needs: Crisis",
+       x = "Date",
+       y = "Projected staff",
+       colour = "Roles",
+       caption = "Estimates from CHIME and user-inputted ratios") +
+  theme_bw() +
+  facet_wrap(~ team_type, scales = "free", ncol = 4)
+
+ggplotly(p)
