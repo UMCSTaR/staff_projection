@@ -10,7 +10,7 @@ library(readxl)
 
 # read data -------
 chime <- read_csv("./data/2020-04-02_projected_census.csv")
-team <- read_xlsx("./data/staff_table.xlsx")
+team <- read_xlsx("./data/staff_table.xlsx") 
 
 
 team_icu_def = team %>%
@@ -35,7 +35,7 @@ ui <- fluidPage(
   ("along with a"),
   strong("staffing tables"),
   (
-    "file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template."
+    "file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template or your edited staffing ratios."
   ),
   em(
     "The tools at the top-right of the figure can help you navigate the resulting graph."
@@ -43,13 +43,11 @@ ui <- fluidPage(
   
   hr(),
   
+  # sidebar -------
   sidebarLayout(
-    
+    sidebarPanel(width = 3,
 
-    column(
-      3,
-
-      h4("Inputs"),
+      h4("Input Projected Census"),
       
       fileInput(
         "chime_up",
@@ -59,6 +57,28 @@ ui <- fluidPage(
                    "text/comma-separated-values,text/plain",
                    ".csv")
       ),
+      
+      hr(),
+      numericInput(
+        "n_icu_max",
+        "Capacity of ICU:",
+        180,
+        min = 0,
+        max = 1000,
+        step = 10,
+        width = "70%"
+      ),
+      
+      numericInput(
+        "n_gen_max",
+        "Capacity of General Medicine Floor:",
+        180,
+        min = 0,
+        max = 1000,
+        step = 10,
+        width = "70%"
+      ),
+      
       
       hr(),
       
@@ -84,13 +104,18 @@ ui <- fluidPage(
       #hr(),
       # actionButton("generateButton", label = "Generate Plot"),
       
-      # hr(),
+      hr(),
       
-      # downloadButton("downloadData", "Download Combined File")
+      p("Download CSV files that produce the plots."),
+
+      downloadButton("downloadData_combine_file", "Download Combined File",
+                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4")
     ),
     
+    # mainPanel --------
     mainPanel(
       
+      h3("Project Your Staffing Needs"),
       
       tags$style(HTML("
         .tabbable > .nav > li[class=active]    > a[data-value='Normal'] {background-color: #9dc183; color:black}
@@ -103,8 +128,13 @@ ui <- fluidPage(
         type = "tabs",
         
         # plot tabs
-        tabPanel("Normal", plotlyOutput("plot_norm")),
-        tabPanel("Crisis", plotlyOutput("plot_crisis")),
+        tabPanel("Normal", 
+                 br(),
+                 plotlyOutput("plot_norm")
+                 ),
+        tabPanel("Crisis", 
+                 br(),
+                 plotlyOutput("plot_crisis")),
         
         
         # editable tables -------
@@ -151,9 +181,9 @@ ui <- fluidPage(
           
           br(),
           
-          downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
-                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-          
+          # downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
+          #                style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+          # 
           
           h4("Non-ICU"),
           
@@ -162,10 +192,13 @@ ui <- fluidPage(
           br(),
           
           
-          downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
-                        style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-          
+          # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
+          #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+          # 
            
+          downloadButton("downloadData_all_ratio", "Download Staffing Ratios Tables",
+                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+          
           
           column(
             12,
@@ -183,7 +216,7 @@ ui <- fluidPage(
               br(),
               br()
             )
-          ),
+          )
         )
         
       ))
@@ -342,8 +375,7 @@ server <- function(input, output, session) {
       
       values$df = hot_to_r(input$x1) %>% 
         mutate(team_type = "ICU") %>% 
-        rename(role = Role,
-               n_bed_per_person = "Ratio (Normal)" ,
+        rename(n_bed_per_person = "Ratio (Normal)" ,
                n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
         select(team_type, everything())
     })
@@ -380,18 +412,22 @@ server <- function(input, output, session) {
                      filter(team_type == "ICU Crisis" | team_type == "General Crisis"), 
                    aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
         geom_line() +
-        labs(title = "Projected Staffing Needs: Crisis",
-             x = "Date",
-             y = "Projected staff",
+        # labs(title = "Projected Staffing Needs: Crisis",
+        labs(y = "Projected staff",
              colour = "Roles",
              caption = "Estimates from CHIME and user-inputted ratios") +
         theme_bw() +
         # facet_wrap(~ team_type, scales = "free", ncol = 4)
         facet_wrap(~ team_type, ncol = 4) +
-        scale_y_continuous(trans = "log", breaks = c(50,100,200, 300))
+        scale_y_continuous(trans = "log", breaks = c(5, 10, 50,100,200, 300)) +
+        theme(
+          plot.title = element_text(size = 12, face = "bold"),
+          ) +
+        scico::scale_color_scico_d(begin = .1, end = .9) 
       
-      fig <- ggplotly(p)
       
+      fig <- ggplotly(p, tooltip=c("x", "y", "colour"))
+
       fig
       
     })
@@ -402,19 +438,19 @@ server <- function(input, output, session) {
                        filter(team_type == "ICU Normal" | team_type == "General Normal"),
                      aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
           geom_line() +
-          labs(title = "Projected Staffing Needs: Normal",
-               x = "Date",
+          # labs(title = "Projected Staffing Needs: Normal",
+          labs(x = "Date",
                y = "Projected staff",
                colour = "Roles",
                caption = "Estimates from CHIME and user-inputted ratios") +
           theme_bw() +
           # facet_wrap(~ team_type, scales = "free", ncol = 4)
           facet_wrap(~ team_type, ncol = 4) +
-          scale_y_continuous(trans = "log", , breaks = c(5, 10, 50,100,200, 300))
+          scale_y_continuous(trans = "log",  breaks = c(5, 10, 50,100,200, 300))
         
 
-        fig <- ggplotly(p)
-
+        fig <- ggplotly(p, tooltip=c("x", "y", "colour"))
+        
         fig
 
       })
@@ -428,25 +464,61 @@ server <- function(input, output, session) {
       updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
     })
     
+    output$downloadData_combine_file <- downloadHandler( 
+      filename = function(){
+        paste("chime_ratio_combined", ".csv", sep="")
+      }, 
+      
+      content = function(file) {
+        write.csv(display_table(), file, row.names = FALSE)
+      })
+    
     
    
-    output$downloadData_icu_ratio <- downloadHandler(
-      filename = function() {
-        paste('ICU_Staffing_role_and_ratio', Sys.Date(), '.csv', sep='')
-      },
-      content = function(con) {
-        finalDF <- hot_to_r(input$x1)
-        write.csv(finalDF, con)
-      }
-    )
+    # output$downloadData_icu_ratio <- downloadHandler(
+    #   filename = function() {
+    #     paste('ICU_Staffing_role_and_ratio', Sys.Date(), '.csv', sep='')
+    #   },
+    #   content = function(con) {
+    #     finalDF <- hot_to_r(input$x1)
+    #     write.csv(finalDF, con)
+    #   }
+    # )
+    # 
+    # output$downloadData_norm <- downloadHandler(
+    #   filename = function() {
+    #     paste('staffing_normal', Sys.Date(), '.csv', sep='')
+    #   },
+    #   content = function(con) {
+    #     finalDF <- hot_to_r(input$x2)
+    #     write.csv(norm_staff_table(), con)
+    #   }
+    # )
     
-    output$downloadData_norm <- downloadHandler(
+    
+    output$downloadData_all_ratio <- downloadHandler(
       filename = function() {
-        paste('staffing_normal', Sys.Date(), '.csv', sep='')
+        paste('Staffing_role_and_ratio', Sys.Date(), '.xlsx', sep='')
       },
       content = function(con) {
-        finalDF <- hot_to_r(input$x2)
-        write.csv(norm_staff_table(), con)
+        finalDF <- hot_to_r(input$x1) %>% 
+          mutate(team_type = "ICU") %>% 
+          rename(role = Role,
+                 n_bed_per_person = "Ratio (Normal)" ,
+                 n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+          select(team_type, everything())
+        
+        finalDF_non_icu <- hot_to_r(input$x2) %>% 
+          mutate(team_type = "General") %>% 
+          rename(role = Role,
+                 n_bed_per_person = "Ratio (Normal)" ,
+                 n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+          select(team_type, everything())
+        
+        
+        all_ratio = rbind(finalDF, finalDF_non_icu)
+        
+        writexl::write_xlsx(all_ratio, path = con)
       }
     )
     
