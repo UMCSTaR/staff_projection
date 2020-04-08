@@ -1,77 +1,25 @@
 chart_data <- function(chime, ratio_table) {
   
-  # Clean up CHIME 
-  chime <- chime %>%
-    filter(day >= 0)
+  require(tidyverse)
   
-  # Get rows after clean
-  chime_row <- nrow(chime)
+  chime_long = chime %>% 
+    filter(day >= 0) %>% 
+    rename(General = hospitalized, ICU = icu) %>%
+    select(-ventilated) %>%
+    pivot_longer(c(ICU, General), names_to = 'team_type', values_to = 'n')
   
-  # Create four plots: ICU / General; Normal / Crisis
-  # icu_ratio <- data2() %>% 
-  #     filter(team_type == "ICU") 
-  icu_ratio <- ratio_table %>% 
-    filter(team_type == "ICU") 
+  ratio_table_long = ratio_table %>%
+    pivot_longer(
+      c(n_bed_per_person, n_bed_per_person_crisis),
+      names_to = 'crisis_mode',
+      values_to = 'n_bed_per_person'
+    ) %>%
+    mutate(crisis_mode = if_else(str_detect(crisis_mode, 'crisis'),'Crisis','Normal'))
   
-  icu_ratio_row <- nrow(icu_ratio) + 2
+  all = left_join(chime_long, ratio_table_long, by = 'team_type')
   
-  icu_norm <- icu_ratio %>%
-    select(role, n_bed_per_person) %>%
-    mutate(day = 0,
-           team_type = "ICU Normal") %>%
-    pivot_wider(., id_cols = c("day", "team_type"), names_from = role, values_from = n_bed_per_person) %>%
-    add_row(day = 1:chime_row) %>%
-    fill(., 2:all_of(icu_ratio_row))
-  
-  icu_crisis <- icu_ratio %>%
-    select(role, n_bed_per_person_crisis) %>%
-    mutate(day = 0,
-           team_type = "ICU Crisis") %>%
-    pivot_wider(., id_cols = c("day", "team_type"), names_from = role, values_from = n_bed_per_person_crisis) %>%
-    add_row(day = 1:chime_row) %>%
-    fill(., 2:all_of(icu_ratio_row))
-  
-  # gen_ratio <- data2() %>% 
-  #     filter(team_type == "General") 
-  gen_ratio <- ratio_table %>%
-    filter(team_type == "General")
-  
-  gen_ratio_row <- nrow(gen_ratio) + 2
-  
-  gen_norm <- gen_ratio %>%
-    select(role, n_bed_per_person) %>%
-    mutate(day = 0,
-           team_type = "General Normal") %>%
-    pivot_wider(., id_cols = c("day", "team_type"), names_from = role, values_from = n_bed_per_person) %>%
-    add_row(day = 1:chime_row) %>%
-    fill(., 2:all_of(gen_ratio_row))
-  
-  gen_crisis <- gen_ratio %>%
-    select(role, n_bed_per_person_crisis) %>%
-    mutate(day = 0,
-           team_type = "General Crisis") %>%
-    pivot_wider(., id_cols = c("day", "team_type"), names_from = role, values_from = n_bed_per_person_crisis) %>%
-    add_row(day = 1:chime_row) %>%
-    fill(., 2:all_of(gen_ratio_row)) 
-  
-  # Append tables
-  lookup <- bind_rows(icu_norm, icu_crisis, gen_norm, gen_crisis)
-  
-  look_col <- ncol(lookup)
-  
-  lookup <- lookup %>%
-    pivot_longer(., 3:all_of(look_col), names_to = "role", values_to = "n_bed_per_person")  %>%
-    filter(!is.na(n_bed_per_person))
-  
-  # Create visualization data frame
-  chime_lookup <- full_join(chime, lookup, by = "day")
-  
-  chime_lookup <- chime_lookup %>%
-    mutate(projected_bed_icu =  icu / n_bed_per_person,
-           projected_bed_hosp =  hospitalized / n_bed_per_person,
-           projected_bed_per_person = ifelse(team_type == "General Normal" | team_type == "General Crisis",
-                                             projected_bed_hosp,
-                                             ifelse(team_type == "ICU Normal" | team_type == "ICU Crisis",
-                                                    projected_bed_icu, NA)),
-           projected_bed_per_person = ifelse(is.infinite(projected_bed_per_person), 0, projected_bed_per_person))
+  all %>% 
+    mutate(projected_bed_per_person = n / n_bed_per_person) %>% 
+    mutate_if(is.numeric, function(x) if_else(is.infinite(x), NA_real_, x))
 }
+
