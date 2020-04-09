@@ -54,3 +54,4 @@ Backup of *.doc*
 
 # PowerPoint temporary
 ~$*.ppt*
+*.dcf
