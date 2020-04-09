@@ -5,13 +5,14 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
     filter(crisis_mode == mode) %>% 
     mutate_if(is.numeric, round, digits = digits) %>% 
     rename_all(stringr::str_to_title) %>% 
-    rename_all(stringr::str_replace_all, pattern = '_', replacement =' ')
+    rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>% 
+    rename('Projected Number of Staff' = `Projected bed per person`)
   
   p = d_processed %>%  
     ggplot(
       aes(
         x = Date,
-        y = `Projected bed per person`,
+        y = `Projected Number of Staff`,
         colour = Role
       )
     ) +

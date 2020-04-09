@@ -9,7 +9,7 @@ library(plotly)
 library(readxl)
 
 # read data -------
-chime <- read_csv("./data/2020-04-02_projected_census.csv")
+chime <- read_csv("./data/2020-04-08_projected_census.csv")
 team <- read_xlsx("./data/staff_table.xlsx") 
 
 
@@ -24,6 +24,7 @@ team_gen_def = team %>%
 
 # data procssing for plot
 source("function/chart_data.R")
+source("function/plot_chart_data.R")
 
 
 # UI ----------------
@@ -58,26 +59,7 @@ ui <- fluidPage(
                    ".csv")
       ),
       
-      hr(),
-      numericInput(
-        "n_icu_max",
-        "Capacity of ICU:",
-        180,
-        min = 0,
-        max = 1000,
-        step = 10,
-        width = "70%"
-      ),
       
-      numericInput(
-        "n_gen_max",
-        "Capacity of General Medicine Floor:",
-        180,
-        min = 0,
-        max = 1000,
-        step = 10,
-        width = "70%"
-      ),
       
       
       hr(),
@@ -126,7 +108,7 @@ ui <- fluidPage(
         id = "inTabset",
         
         type = "tabs",
-        
+
         # plot tabs
         tabPanel("Normal", 
                  br(),
@@ -375,7 +357,8 @@ server <- function(input, output, session) {
       
       values$df = hot_to_r(input$x1) %>% 
         mutate(team_type = "ICU") %>% 
-        rename(n_bed_per_person = "Ratio (Normal)" ,
+        rename(role = Role,
+               n_bed_per_person = "Ratio (Normal)" ,
                n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
         select(team_type, everything())
     })
@@ -397,63 +380,30 @@ server <- function(input, output, session) {
                n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
         select(team_type, everything())
     })
-      
-      
-    display_table <- reactive({
-      rbind(gen_ratio_table(), icu_ratio_table()) %>% 
-        chart_data(chime = chime_table())
+    
+    # here ------
+    ratio_table <- reactive({
+      rbind(gen_ratio_table(), icu_ratio_table())
     })
+    
+    display_table <- reactive({
+         chart_data(chime_table(),ratio_table())
+    })
+    
+    
+
     
     # plots -------
-
+    
     
     output$plot_crisis <- renderPlotly({
-      p <-  ggplot(display_table() %>%
-                     filter(team_type == "ICU Crisis" | team_type == "General Crisis"), 
-                   aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
-        geom_line() +
-        # labs(title = "Projected Staffing Needs: Crisis",
-        labs(y = "Projected staff",
-             colour = "Roles",
-             caption = "Estimates from CHIME and user-inputted ratios") +
-        theme_bw() +
-        # facet_wrap(~ team_type, scales = "free", ncol = 4)
-        facet_wrap(~ team_type, ncol = 4) +
-        scale_y_continuous(trans = "log", breaks = c(5, 10, 50,100,200, 300)) +
-        theme(
-          plot.title = element_text(size = 12, face = "bold"),
-          ) +
-        scico::scale_color_scico_d(begin = .1, end = .9) 
-      
-      
-      fig <- ggplotly(p, tooltip=c("x", "y", "colour"))
-
-      fig
-      
+      plot_chart_data(display_table(), mode = "Crisis")
     })
-    
-    
+
+
     output$plot_norm <- renderPlotly({
-        p <-  ggplot(display_table() %>%
-                       filter(team_type == "ICU Normal" | team_type == "General Normal"),
-                     aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
-          geom_line() +
-          # labs(title = "Projected Staffing Needs: Normal",
-          labs(x = "Date",
-               y = "Projected staff",
-               colour = "Roles",
-               caption = "Estimates from CHIME and user-inputted ratios") +
-          theme_bw() +
-          # facet_wrap(~ team_type, scales = "free", ncol = 4)
-          facet_wrap(~ team_type, ncol = 4) +
-          scale_y_continuous(trans = "log",  breaks = c(5, 10, 50,100,200, 300))
-        
-
-        fig <- ggplotly(p, tooltip=c("x", "y", "colour"))
-        
-        fig
-
-      })
+      plot_chart_data(display_table(), mode = "Normal")
+    })
     
     # buttons ------
     observeEvent(input$generateButton, {

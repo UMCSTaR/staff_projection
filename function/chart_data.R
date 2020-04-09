@@ -19,7 +19,12 @@ chart_data <- function(chime, ratio_table) {
   all = left_join(chime_long, ratio_table_long, by = 'team_type')
   
   all %>% 
-    mutate(projected_bed_per_person = n / n_bed_per_person) %>% 
-    mutate_if(is.numeric, function(x) if_else(is.infinite(x), NA_real_, x))
+    mutate(projected_bed_per_person = n / n_bed_per_person,
+           projected_bed_per_person = 
+             if_else(
+               is.infinite(projected_bed_per_person),
+               0,
+               projected_bed_per_person
+             ))
 }
 
