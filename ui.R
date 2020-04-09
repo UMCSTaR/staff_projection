@@ -101,7 +101,9 @@ shinyUI(
                     tabPanel(value = "census",
                              title = "Projected Census",
                              
-                             h4("Option1: Upload projected census from CHIME"),
+                             h4("Option1: Upload projected census from", a("CHIME", href= "https://penn-chime.phl.io/")),
+                             
+                             # helpText(a("Click Here to Download Survey",  href= "https://penn-chime.phl.io/")),
                              
                              fileInput(
                                "chime_up",
@@ -145,9 +147,8 @@ shinyUI(
                     tabPanel(
                       value = "edit_ratio_table",
                       title = "Patient-to-Staff Ratios",
-                      br(),
-                      
-                      p(strong("Option1: Upload Staffing Ratios File")),
+
+                      h4("Option1: Upload Staffing Ratios File"),
                       
                       fileInput(
                         "team_in",
@@ -156,7 +157,7 @@ shinyUI(
                         accept = c(".xlsx")
                       ),
                       
-                      p(strong("Option2: Edit Staffing Ratio Table Below")),
+                      h4("Option2: Edit Staffing Ratio Table Below"),
                       
                       
                       helpText(
