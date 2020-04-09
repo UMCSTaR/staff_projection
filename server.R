@@ -74,6 +74,21 @@ shinyServer(
             
         })
         
+        # chime default  -------
+        observeEvent(input$default_chime,
+                     output$prejected_census <- renderRHandsontable({
+                         rhandsontable(
+                             chime_table() %>%
+                                 filter(day >= 0) %>%
+                                 mutate(day = as.integer(day)),
+                             rowHeaders = FALSE,
+                             width = 470,
+                             stretchH = "all",
+                             height = 300
+                         )
+                         
+                     }))
+        
         
         # reset Chime table
         observeEvent(input$reset_census,
@@ -94,7 +109,7 @@ shinyServer(
         # Chime editable tables 
         values <- reactiveValues()
         
-        # here ---------
+        # Chime table ---------
         chime_edit <- reactive({
             if(is.null(input$prejected_census))
                 return(chime)
@@ -235,10 +250,10 @@ shinyServer(
                 select(team_type, everything())
         })
         
-        # here ------
         ratio_table <- reactive({
             rbind(gen_ratio_table(), icu_ratio_table())
         })
+        
         
         display_table <- reactive({
             chart_data(chime_edit(),ratio_table())
@@ -262,9 +277,6 @@ shinyServer(
             updateTabsetPanel(session, "inTabset", selected = "Normal")
         })
         
-        observeEvent(input$generateButton_2, {
-            updateTabsetPanel(session, "inTabset", selected = "Normal")
-        })
         
         observeEvent(input$update_gen, {
             updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")

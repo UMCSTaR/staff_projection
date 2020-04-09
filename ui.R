@@ -25,14 +25,12 @@ shinyUI(
         # sidebar -------
         sidebarLayout(
             sidebarPanel(width = 3,
-                         
-                         h4("Input Projected Census"),
-                         
-                         p(strong("Option1: Upload projected census from CHIME")),
+                         # census
+                         h4("Step1 - Input Projected Census"),
                          
                          actionButton(
                            "prejected_cesus",
-                           label = "Input Projected Census",
+                           label = "Input Projected Census Data",
                            icon("database"),
                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
@@ -41,28 +39,11 @@ shinyUI(
                          br(),
                          
                          
-                         
-                         p(strong("Option2: Input your own projected census")),
-                         
-                         fileInput(
-                             "chime_up",
-                             "CHIME (.csv)",
-                             multiple = FALSE,
-                             accept = c("text/csv",
-                                        "text/comma-separated-values,text/plain",
-                                        ".csv")
-                         ),
-                         
-                         
-                         
-                         
-                         
-                         
+                         # staff ratio
                          hr(),
                          
-                         h4("Staffing Ratio"),
+                         h4("Step2 -Edit Staffing Ratios"),
                          
-                         p(strong("Option1: Edit Staffing Ratios")),
                          actionButton("update_gen", "Edit Staffing Ratios",
                                       icon("user-md"),
                                       style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
@@ -71,16 +52,17 @@ shinyUI(
                          br(),
                          br(),
                          
-                         p(strong("Option2: Upload Staffing Ratios File")),
                          
-                         fileInput(
-                             "team_in",
-                             "Staffing Ratios (.xlsx)",
-                             multiple = FALSE,
-                             accept = c(".xlsx")
+                         hr(),
+                         h4("Step3 - Generate Plots"),
+                      
+                         actionButton(
+                           "generateButton",
+                           label = "Generate Plot",
+                           icon("chart-line"),
+                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
-                         #hr(),
-                         # actionButton("generateButton", label = "Generate Plot"),
+                         
                          
                          hr(),
                          
@@ -115,105 +97,35 @@ shinyUI(
                              plotlyOutput("plot_crisis")),
                     
                     
-                    # editable tables -------
-                    tabPanel(
-                        value = "edit_ratio_table",
-                        title = "Patient-to-Staff Ratios",
-                        br(),
-                        
-                        helpText(
-                            strong("Important note:"),
-                            "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
-                        ),
-                        
-                        
-                        actionButton("reset", "Clear Table", icon("table"),
-                                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                        actionButton("reset_to_ori", "Reset to Default", icon("undo"),
-                                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                        br(),
-                        br(),
-                        actionButton(
-                            "generateButton",
-                            label = "Generate Plot",
-                            icon("chart-line"),
-                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
-                        ),
-                        
-                        
-                        
-                        
-                        br(),
-                        br(),
-                        
-                        p(
-                            strong("Right click"),
-                            "in a cell to add and delete row;",
-                            "select cell and type the new value",
-                            style = "font-size:16px"
-                        ),
-                        
-                        h4("ICU"),
-                        
-                        div(rHandsontableOutput("x1"), style = "font-size: 120%"),
-                        
-                        br(),
-                        
-                        # downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
-                        #                style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                        # 
-                        
-                        h4("Non-ICU"),
-                        
-                        div(rHandsontableOutput("x2"), style = "font-size: 120%"),
-                        
-                        br(),
-                        
-                        
-                        # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
-                        #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                        # 
-                        
-                        downloadButton("downloadData_all_ratio", "Download Staffing Ratios Tables",
-                                       style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                        
-                        
-                        column(
-                            12,
-                            br(),
-                            tags$div(
-                                "Role: List of possible staff roles",
-                                tags$br(),
-                                "Ratio (normal) = the patient:staff ratio (i.e. how many patients each staff member cares for)",
-                                tags$br(),
-                                "Ratio (Crisis Mode) = the patient:staff ratio during a ‘crisis mode’ (ie. the maximum number patients each staff member can care for)",
-                                tags$br(),
-                                tags$br(),
-                                tags$br(),
-                                "* Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.",
-                                br(),
-                                br()
-                            )
-                        )
-                    ),
-                    
-                    # prejected census ------
+                    # projected census ------
                     tabPanel(value = "census",
                              title = "Projected Census",
+                             
+                             h4("Option1: Upload projected census from CHIME"),
+                             
+                             fileInput(
+                               "chime_up",
+                               "CHIME (.csv)",
+                               multiple = FALSE,
+                               accept = c("text/csv",
+                                          "text/comma-separated-values,text/plain",
+                                          ".csv")
+                             ),
+                             
+                             h4("Option2: Input your own projected census below"),
+                             
 
                              p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value",
-                               style = "font-size:16px"),
-                            
+                               style = "font-size:13px"),
+                             
                              
                              actionButton("reset_census", "Clear Table", icon("table"),
                                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                              
-                             actionButton(
-                               "generateButton_2",
-                               label = "Generate Plot",
-                               icon("chart-line"),
-                               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
-                             ),
+                             actionButton("default_chime", "Reset to Default", icon("undo"),
+                                          style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                             
+                            
                              
                              br(),
                              br(),
@@ -227,7 +139,89 @@ shinyUI(
                              
                              
                              
+                    ),
+                    
+                    # editable tables -------
+                    tabPanel(
+                      value = "edit_ratio_table",
+                      title = "Patient-to-Staff Ratios",
+                      br(),
+                      
+                      p(strong("Option1: Upload Staffing Ratios File")),
+                      
+                      fileInput(
+                        "team_in",
+                        "Staffing Ratios (.xlsx)",
+                        multiple = FALSE,
+                        accept = c(".xlsx")
+                      ),
+                      
+                      p(strong("Option2: Edit Staffing Ratio Table Below")),
+                      
+                      
+                      helpText(
+                        strong("Important note:"),
+                        "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
+                      ),
+                      
+                      actionButton("reset", "Clear Table", icon("table"),
+                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      actionButton("reset_to_ori", "Reset to Default", icon("undo"),
+                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      br(),
+                      br(),
+                      
+                      p(
+                        strong("Right click"),
+                        "in a cell to add and delete row;",
+                        "select cell and type the new value",
+                        style = "font-size:16px"
+                      ),
+                      
+                      h4("ICU"),
+                      
+                      div(rHandsontableOutput("x1"), style = "font-size: 120%"),
+                      
+                      br(),
+                      
+                      # downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
+                      #                style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      # 
+                      
+                      h4("Non-ICU"),
+                      
+                      div(rHandsontableOutput("x2"), style = "font-size: 120%"),
+                      
+                      br(),
+                      
+                      
+                      # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
+                      #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      # 
+                      
+                      downloadButton("downloadData_all_ratio", "Download Staffing Ratios Tables",
+                                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      
+                      
+                      column(
+                        12,
+                        br(),
+                        tags$div(
+                          "Role: List of possible staff roles",
+                          tags$br(),
+                          "Ratio (normal) = the patient:staff ratio (i.e. how many patients each staff member cares for)",
+                          tags$br(),
+                          "Ratio (Crisis Mode) = the patient:staff ratio during a ‘crisis mode’ (ie. the maximum number patients each staff member can care for)",
+                          tags$br(),
+                          tags$br(),
+                          tags$br(),
+                          "* Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.",
+                          br(),
+                          br()
+                        )
+                      )
                     )
+                    
                     
                 ))
         )
