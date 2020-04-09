@@ -1,4 +1,8 @@
 library(shiny)
+library(tidyverse)
+library(rhandsontable)
+library(shinyjs)
+library(plotly)
 
 # Define UI for application that draws a histogram
 shinyUI(

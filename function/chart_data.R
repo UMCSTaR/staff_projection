@@ -5,7 +5,6 @@ chart_data <- function(chime, ratio_table) {
   chime_long = chime %>% 
     filter(day >= 0) %>% 
     rename(General = hospitalized, ICU = icu) %>%
-    select(-ventilated) %>%
     pivot_longer(c(ICU, General), names_to = 'team_type', values_to = 'n')
   
   ratio_table_long = ratio_table %>%

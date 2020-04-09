@@ -28,7 +28,7 @@ source("function/plot_chart_data.R")
 shinyServer(
     function(input, output, session) {
         
-        # default team ratios vs. upload --------
+        # default vs. upload --------
         # Team ratio ---
         team_table <- reactive({
             if (is.null(input$team_in)) {
@@ -55,18 +55,56 @@ shinyServer(
         # CHIME ---
         chime_table <- reactive({
             if (is.null(input$chime_up)) {
-                chime
+                chime %>% 
+                    select(-ventilated) 
+                    
             } else {
-                read_csv(input$chime_up$datapath)
+                read_csv(input$chime_up$datapath) %>% 
+                    select(-ventilated) 
             }
         }) 
         
+        # editable projected census ------
+        output$prejected_census <- renderRHandsontable({
+            rhandsontable(
+                chime_table() %>% 
+                    filter(day>=0) %>% 
+                    mutate(day = as.integer(day)),
+                rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
+            
+        })
         
         
+        # reset Chime table
+        observeEvent(input$reset_census,
+                     output$prejected_census <- renderRHandsontable({
+                         rhandsontable(
+                             tibble(day = c(1:5),
+                                    date = NA,
+                                    hospitalized = 0,
+                                    icu = 0) %>% 
+                                 mutate(date = lubridate::as_date(day, origin = "2020-03-22"),
+                                        day = as.integer(day),
+                                        hospitalized = as.integer(hospitalized),
+                                        icu = as.integer(icu)),
+                             rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
+                     })
+        )
         
-        # editable tables -------
+        # Chime editable tables 
         values <- reactiveValues()
         
+        # here ---------
+        chime_edit <- reactive({
+            if(is.null(input$prejected_census))
+                return(chime)
+            
+            values$df_chime = hot_to_r(input$prejected_census) 
+        })
+        
+        
+        # Staff ratio editable tables -------
+
         # reset reference table -------
         reset_table = tibble(role = c("Role1", "Role2", "Role3"),
                              ratio = as.numeric(rep(0, 3)),
@@ -160,9 +198,7 @@ shinyServer(
         })
         
         
-        
         # calculations happen here ------
-        
         icu_ratio_table <- reactive({
             if(is.null(input$x1))
                 return(
@@ -205,7 +241,7 @@ shinyServer(
         })
         
         display_table <- reactive({
-            chart_data(chime_table(),ratio_table())
+            chart_data(chime_edit(),ratio_table())
         })
         
         
@@ -291,33 +327,6 @@ shinyServer(
                 
                 writexl::write_xlsx(all_ratio, path = con)
             }
-        )
-        
-        
-        # project census ------
-        output$prejected_census <- renderRHandsontable({
-            rhandsontable(
-                chime_table() %>% 
-                    filter(day>=0) %>% 
-                    select(-ventilated) %>% 
-                    mutate(day = as.integer(day)),
-                 rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
-            
-        })
-        
-        observeEvent(input$reset_census,
-            output$prejected_census <- renderRHandsontable({
-                rhandsontable(
-                    tibble(day = c(1:5),
-                           date = NA,
-                           hospitallized = 0,
-                           icu = 0) %>% 
-                        mutate(date = lubridate::as_date(day),
-                               day = as.integer(day),
-                               hospitallized = as.integer(hospitallized),
-                               icu = as.integer(icu)),
-                    rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
-            })
         )
         
         
