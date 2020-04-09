@@ -22,7 +22,7 @@ vignettes/*.html
 
 
 # data
-Data/
+# Data/
 results/
 
 # bs files created by system
