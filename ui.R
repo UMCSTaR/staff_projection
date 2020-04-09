@@ -28,6 +28,22 @@ shinyUI(
                          
                          h4("Input Projected Census"),
                          
+                         p(strong("Option1: Upload projected census from CHIME")),
+                         
+                         actionButton(
+                           "prejected_cesus",
+                           label = "Input Projected Census",
+                           icon("database"),
+                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
+                         ),
+                         
+                         br(),
+                         br(),
+                         
+                         
+                         
+                         p(strong("Option2: Input your own projected census")),
+                         
                          fileInput(
                              "chime_up",
                              "CHIME (.csv)",
@@ -38,12 +54,7 @@ shinyUI(
                          ),
                          
                          
-                         actionButton(
-                             "prejected_cesus",
-                             label = "Input Projected Census",
-                             icon("database"),
-                             style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
-                         ),
+                         
                          
                          
                          
@@ -189,15 +200,32 @@ shinyUI(
                     # prejected census ------
                     tabPanel(value = "census",
                              title = "Projected Census",
-                             br(),
+
+                             p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value",
+                               style = "font-size:16px"),
+                            
                              
                              actionButton("reset_census", "Clear Table", icon("table"),
                                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                              
+                             actionButton(
+                               "generateButton_2",
+                               label = "Generate Plot",
+                               icon("chart-line"),
+                               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
+                             ),
+                             
                              br(),
                              br(),
                              
-                             rHandsontableOutput("prejected_census")
+                             rHandsontableOutput("prejected_census"),
+                             
+                             br(),
+                             
+                             helpText(strong("hospitalized"), ": n of patients that are hospitalized in", em("Non-ICU"), "units; ",
+                                      strong("icu"), ": n of patients that are in", em("ICU"), "units")
+                             
+                             
                              
                     )
                     

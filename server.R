@@ -262,6 +262,10 @@ shinyServer(
             updateTabsetPanel(session, "inTabset", selected = "Normal")
         })
         
+        observeEvent(input$generateButton_2, {
+            updateTabsetPanel(session, "inTabset", selected = "Normal")
+        })
+        
         observeEvent(input$update_gen, {
             updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
         })
