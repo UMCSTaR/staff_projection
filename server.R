@@ -7,6 +7,7 @@ library(readxl)
 
 # read data -------
 chime <- read_csv("./data/2020-04-08_projected_census.csv")
+
 team <- read_xlsx("./data/staff_table.xlsx") 
 capacity <- read_xlsx("./data/staffing_normal2020-04-08_other_additional input.xlsx", skip = 1) %>%
     filter(!is.na(Role)) %>% select(-1) %>%
@@ -14,17 +15,27 @@ capacity <- read_xlsx("./data/staffing_normal2020-04-08_other_additional input.x
     rename_all(function(x) tolower(str_replace_all(x, " ", "_")))
 
 
+# read team ratio 
+team_ratio = readxl::read_xlsx("./data/team_ratio_shift.xlsx") %>% 
+    mutate_if(is.numeric, as.integer)   
+
+
 capacity_def = capacity %>% 
     select("role", "total_employees_at_full_capacity", "current_bed_occupancy") %>%
     mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity))
     
-team_icu_def = team %>%
+               
+# ICU 
+team_icu = team_ratio %>%
     filter(team_type == "ICU") %>%
-    transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_crisis)
+    transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
+              shift_length_hr, shift_per_week)
 
-team_gen_def = team %>%
+# non-icu
+team_gen = team_ratio %>%
     filter(team_type == "General") %>%
-    transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_crisis)
+    transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
+              shift_length_hr, shift_per_week)
 
 
 # data procssing for plot
@@ -40,12 +51,13 @@ shinyServer(
         # Team ratio ---
         team_table <- reactive({
             if (is.null(input$team_in)) {
-                team
+                team_ratio
             } else {
                 read_xlsx(input$team_in$datapath)
             }
         }) 
         
+
         capacity_table <- reactive({
             if (is.null(input$team_in)) {
                 capacity
@@ -53,20 +65,24 @@ shinyServer(
                 read_xlsx(input$team_in$datapath)
             }
         })
+
+       
         
         # ICU
-        team_icu = reactive({
+        team_icu_react = reactive({
             team_table() %>%
                 filter(team_type == "ICU") %>%
-                transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_crisis)
+                transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
+                          shift_length_hr, shift_per_week)
         })
         
         # non-icu
-        team_gen = reactive({
+        team_gen_react = reactive({
             team_table() %>%
                 filter(team_type == "General") %>%
-                transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_crisis)
-        })
+                transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
+                          shift_length_hr, shift_per_week)        
+            })
         
         # capacity
         capacity_gen = reactive({
@@ -143,11 +159,15 @@ shinyServer(
         # Staff ratio editable tables -------
 
         # reset reference table -------
-        reset_table = tibble(role = c("Role1", "Role2", "Role3"),
+        reset_table = tibble(role = c("Role1", NA, NA),
                              ratio = as.numeric(rep(0, 3)),
                              ratio_s = as.numeric(rep(0, 3)),
+
                              total_employees_at_full_capacity = as.integer(rep(0, 3)),
                              current_bed_occupancy = as.numeric(rep(0, 3)))
+
+                             shift_length_hr = rep(0,3),
+                             shift_per_week = rep(0,3))
         
         # reset to clear table
         observeEvent(input$reset,{
@@ -156,12 +176,17 @@ shinyServer(
                     reset_table %>% select(1:3) %>%
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis Mode)" = ratio_s,
-                            Role = role
+                            "Ratio (Crisis)" = ratio_s,
+                            Role = role,
+                            "Shift Length(hour)" = shift_length_hr,
+                            "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
-                ) %>% 
-                    hot_cols(colWidths = 100) 
+                        mutate_if(is.numeric, as.integer),
+                    rowHeaders = FALSE,
+                    width = 650,
+                    stretchH = "all"
+                ) %>%
+                    hot_cols(colWidths = 100)
             })
             
             output$x2 <- renderRHandsontable({
@@ -169,10 +194,12 @@ shinyServer(
                     reset_table %>% select(1:3) %>%
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis Mode)" = ratio_s,
-                            Role = role
+                            "Ratio (Crisis)" = ratio_s,
+                            Role = role,
+                            "Shift Length(hour)" = shift_length_hr,
+                            "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -196,28 +223,32 @@ shinyServer(
         observeEvent(input$reset_to_ori,{
             output$x1 <- renderRHandsontable({
                 rhandsontable(
-                    team_icu_def %>%
+                    team_icu_react() %>%
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis Mode)" = ratio_s,
-                            Role = role
+                            "Ratio (Crisis)" = ratio_s,
+                            Role = role,
+                            "Shift Length(hour)" = shift_length_hr,
+                            "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
-                ) %>%
-                    hot_cols(colWidths = 100)
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                ) %>% 
+                    hot_cols(colWidths = 100) 
             })
             
             output$x2 <- renderRHandsontable({
                 rhandsontable(
-                    team_gen_def %>%
+                    team_gen_react() %>% 
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis Mode)" = ratio_s,
-                            Role = role
+                            "Ratio (Crisis)" = ratio_s,
+                            Role = role,
+                            "Shift Length(hour)" = shift_length_hr,
+                            "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
-                ) %>%
-                    hot_cols(colWidths = 100)
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                ) %>% 
+                    hot_cols(colWidths = 100) 
             })
             
             output$x3 <- renderRHandsontable({
@@ -234,16 +265,18 @@ shinyServer(
             })
         })
         
-        
+        # editable ratios table -----
         output$x1 <- renderRHandsontable({
             rhandsontable(
-                team_icu() %>%
+                team_icu_react() %>%
                     rename(
                         "Ratio (Normal)" = ratio,
-                        "Ratio (Crisis Mode)" = ratio_s,
-                        Role = role
+                        "Ratio (Crisis)" = ratio_s,
+                        Role = role,
+                        "Shift Length(hour)" = shift_length_hr,
+                        "Number of Shifts/week" = shift_per_week
                     ) %>%
-                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
+                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
             ) %>% 
                 hot_cols(colWidths = 100) 
             
@@ -251,13 +284,15 @@ shinyServer(
         
         output$x2 <- renderRHandsontable({
             rhandsontable(
-                team_gen() %>% 
+                team_gen_react() %>% 
                     rename(
                         "Ratio (Normal)" = ratio,
-                        "Ratio (Crisis Mode)" = ratio_s,
-                        Role = role
+                        "Ratio (Crisis)" = ratio_s,
+                        Role = role,
+                        "Shift Length(hour)" = shift_length_hr,
+                        "Number of Shifts/week" = shift_per_week
                     ) %>%
-                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 570, stretchH = "all"
+                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
             ) %>% 
                 hot_cols(colWidths = 100) 
             
@@ -282,10 +317,10 @@ shinyServer(
         icu_ratio_table <- reactive({
             if(is.null(input$x1))
                 return(
-                    team_icu_def %>%
-                        mutate(team_type = "ICU") %>% 
+                    team_icu %>%
+                        mutate(team_type = "ICU") %>%
                         rename(n_bed_per_person = ratio ,
-                               n_bed_per_person_crisis = ratio_s) %>% 
+                               n_bed_per_person_crisis = ratio_s) %>%
                         select(team_type, everything())
                 )
             
@@ -293,14 +328,17 @@ shinyServer(
                 mutate(team_type = "ICU") %>% 
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
-                       n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+                       n_bed_per_person_crisis = "Ratio (Crisis)",
+                       shift_length_hr = "Shift Length(hour)",
+                       shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
         })
+        
         
         gen_ratio_table <- reactive({
             if(is.null(input$x2))
                 return(
-                    team_gen_def %>%
+                    team_gen %>%
                         mutate(team_type = "General") %>% 
                         rename(n_bed_per_person = ratio ,
                                n_bed_per_person_crisis = ratio_s) %>% 
@@ -311,7 +349,9 @@ shinyServer(
                 mutate(team_type = "General") %>% 
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
-                       n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+                       n_bed_per_person_crisis = "Ratio (Crisis)",
+                       shift_length_hr = "Shift Length(hour)",
+                       shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
         })
         
@@ -342,9 +382,9 @@ shinyServer(
             rbind(gen_ratio_table(), icu_ratio_table())
         })
         
-        
         display_table <- reactive({
-            chart_data(chime_edit(), ratio_table(), capacity_edit_table())
+            chart_data(chime_edit(),ratio_table(), capacity_edit_table()) %>% 
+                mutate(`Count Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)))
         })
         
         
@@ -414,14 +454,14 @@ shinyServer(
                     mutate(team_type = "ICU") %>% 
                     rename(role = Role,
                            n_bed_per_person = "Ratio (Normal)" ,
-                           n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+                           n_bed_per_person_crisis = "Ratio (Crisis)") %>% 
                     select(team_type, everything())
                 
                 finalDF_non_icu <- hot_to_r(input$x2) %>% 
                     mutate(team_type = "General") %>% 
                     rename(role = Role,
                            n_bed_per_person = "Ratio (Normal)" ,
-                           n_bed_per_person_crisis = "Ratio (Crisis Mode)") %>% 
+                           n_bed_per_person_crisis = "Ratio (Crisis)") %>% 
                     select(team_type, everything())
                 
                 
