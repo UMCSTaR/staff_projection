@@ -1,5 +1,4 @@
-chart_data <- function(chime, ratio_table) {
-  
+chart_data <- function(chime, ratio_table, capacity) {
   require(tidyverse)
   
   chime_long = chime %>% 
@@ -14,9 +13,10 @@ chart_data <- function(chime, ratio_table) {
       values_to = 'n_bed_per_person'
     ) %>%
     mutate(crisis_mode = if_else(str_detect(crisis_mode, 'crisis'),'Crisis','Normal'))
+
   
-  all = left_join(chime_long, ratio_table_long, by = 'team_type')
-  
+  all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity, by = c("role"))
+
   all %>% 
     mutate(projected_bed_per_person = n / n_bed_per_person,
            projected_bed_per_person = 

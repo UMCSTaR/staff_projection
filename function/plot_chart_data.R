@@ -1,5 +1,6 @@
 plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TRUE) {
   require(tidyverse)
+  require(glue)
   
   d_processed = .data %>%
     filter(crisis_mode == mode) %>% 
@@ -15,19 +16,24 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
         x = Date,
         # y = `Projected Number of Staff`,
         y = `Staff Needed`,
-        colour = Role
+        group = Role,
       )
     ) +
-    geom_line() +
+    geom_line(aes(col = Role), show.legend = FALSE) +
     labs(
       title   = paste("Projected Staffing Needs:", mode),
       x       = "",
       y       = "",
       colour  = "Roles",
+      linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
-    scico::scale_color_scico_d() +        # change if needed
-    facet_wrap(~ `Team type`, scales = "free", ncol = 4) +
+    geom_hline(
+      aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
+      size = 0.5
+    ) +
+    scico::scale_color_scico_d() + # change if needed
+    facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)
