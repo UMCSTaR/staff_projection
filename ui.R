@@ -195,6 +195,12 @@ shinyUI(
                       
                       br(),
                       
+                      h4("Capacity"),
+                      
+                      div(rHandsontableOutput("x3"), style = "font-size: 120%"),
+                      
+                      br(),
+                      
                       
                       # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
                       #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
@@ -228,3 +234,4 @@ shinyUI(
         )
     )
     )
+

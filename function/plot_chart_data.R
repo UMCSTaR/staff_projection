@@ -1,5 +1,6 @@
 plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TRUE) {
   require(tidyverse)
+  require(glue)
   
   d_processed = .data %>%
     filter(crisis_mode == mode) %>% 
@@ -7,7 +8,8 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
     rename_all(stringr::str_to_title) %>% 
     rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>% 
     rename('Projected Number of Staff' = `Projected bed per person`)
-  
+
+
   p = d_processed %>%  
     ggplot(
       aes(
@@ -22,10 +24,15 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
       x       = "",
       y       = "",
       colour  = "Roles",
+      linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
-    scico::scale_color_scico_d() +        # change if needed
-    facet_wrap(~ `Team type`, scales = "free", ncol = 4) +
+    geom_hline(
+      aes(yintercept = `Total employees at full capacity`, linetype = Role),
+      size = 0.5
+    ) +
+    scico::scale_color_scico_d() + # change if needed
+    facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)
