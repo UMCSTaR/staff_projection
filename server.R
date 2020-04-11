@@ -7,7 +7,6 @@ library(readxl)
 
 # read data -------
 chime <- read_csv("./data/2020-04-08_projected_census.csv")
-# team <- read_xlsx("./data/staff_table.xlsx")  
 
 # read team ratio 
 team_ratio = readxl::read_xlsx("./data/team_ratio_shift.xlsx") %>% 
@@ -48,7 +47,7 @@ shinyServer(
         
         
         # ICU
-        team_icu = reactive({
+        team_icu_react = reactive({
             team_table() %>%
                 filter(team_type == "ICU") %>%
                 transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
@@ -56,7 +55,7 @@ shinyServer(
         })
         
         # non-icu
-        team_gen = reactive({
+        team_gen_react = reactive({
             team_table() %>%
                 filter(team_type == "General") %>%
                 transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
@@ -179,7 +178,7 @@ shinyServer(
         observeEvent(input$reset_to_ori,{
             output$x1 <- renderRHandsontable({
                 rhandsontable(
-                    team_icu() %>%
+                    team_icu_react() %>%
                         rename(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
@@ -194,7 +193,7 @@ shinyServer(
             
             output$x2 <- renderRHandsontable({
                 rhandsontable(
-                    team_gen() %>% 
+                    team_gen_react() %>% 
                         rename(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
@@ -211,7 +210,7 @@ shinyServer(
         # editable ratios table -----
         output$x1 <- renderRHandsontable({
             rhandsontable(
-                team_icu() %>%
+                team_icu_react() %>%
                     rename(
                         "Ratio (Normal)" = ratio,
                         "Ratio (Crisis)" = ratio_s,
@@ -227,7 +226,7 @@ shinyServer(
         
         output$x2 <- renderRHandsontable({
             rhandsontable(
-                team_gen() %>% 
+                team_gen_react() %>% 
                     rename(
                         "Ratio (Normal)" = ratio,
                         "Ratio (Crisis)" = ratio_s,
@@ -247,9 +246,9 @@ shinyServer(
             if(is.null(input$x1))
                 return(
                     team_icu %>%
-                        mutate(team_type = "ICU") %>% 
+                        mutate(team_type = "ICU") %>%
                         rename(n_bed_per_person = ratio ,
-                               n_bed_per_person_crisis = ratio_s) %>% 
+                               n_bed_per_person_crisis = ratio_s) %>%
                         select(team_type, everything())
                 )
             
