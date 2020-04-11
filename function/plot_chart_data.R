@@ -16,10 +16,10 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
         x = Date,
         # y = `Projected Number of Staff`,
         y = `Staff Needed`,
-        colour = Role
+        group = Role,
       )
     ) +
-    geom_line() +
+    geom_line(aes(col = Role), show.legend = FALSE) +
     labs(
       title   = paste("Projected Staffing Needs:", mode),
       x       = "",
@@ -29,7 +29,7 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
     geom_hline(
-      aes(yintercept = `Total employees at full capacity`, linetype = Role),
+      aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
       size = 0.5
     ) +
     scico::scale_color_scico_d() + # change if needed

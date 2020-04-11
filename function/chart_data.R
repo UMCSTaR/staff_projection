@@ -16,8 +16,7 @@ chart_data <- function(chime, ratio_table, capacity) {
 
   
   all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity, by = c("role"))
-  print(all)
-  
+
   all %>% 
     mutate(projected_bed_per_person = n / n_bed_per_person,
            projected_bed_per_person = 

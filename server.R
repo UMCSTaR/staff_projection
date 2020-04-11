@@ -162,12 +162,11 @@ shinyServer(
         reset_table = tibble(role = c("Role1", NA, NA),
                              ratio = as.numeric(rep(0, 3)),
                              ratio_s = as.numeric(rep(0, 3)),
-
                              total_employees_at_full_capacity = as.integer(rep(0, 3)),
-                             current_bed_occupancy = as.numeric(rep(0, 3)))
-
+                             current_bed_occupancy = as.numeric(rep(0, 3)),
                              shift_length_hr = rep(0,3),
-                             shift_per_week = rep(0,3))
+                             shift_per_week = rep(0,3)
+                             )
         
         # reset to clear table
         observeEvent(input$reset,{
@@ -311,7 +310,7 @@ shinyServer(
                 hot_cols(colWidths = 100) 
             
         })
-        
+   
         
         # calculations happen here ------
         icu_ratio_table <- reactive({
@@ -373,8 +372,6 @@ shinyServer(
                     current_bed_occupancy = "Current bed occupancy",
                     role = "Role"
                 )
-            print(values$df)
-            values$df
         })
         
         
@@ -403,6 +400,23 @@ shinyServer(
             updateTabsetPanel(session, "inTabset", selected = "Normal")
         })
         
+        output$table_result_normal <- DT::renderDataTable(
+            capacity_edit_table() %>%
+                transmute(`Role` = role, 
+                          `Need excess` := total_employees_at_full_capacity * (1-current_bed_occupancy),
+                          `Need COVID (ICU)` := rep(0, length(role)),
+                          `Need COVID (non-ICU)` := rep(0, length(role)),
+                          )
+        )
+                               
+        output$table_result_crisis <- DT::renderDataTable(
+            capacity_edit_table() %>%
+                transmute(`Role` = role, 
+                          `Need excess` := total_employees_at_full_capacity * (1-current_bed_occupancy),
+                          `Need COVID (ICU)` := rep(0, length(role)),
+                          `Need COVID (non-ICU)` := rep(0, length(role)),
+                )
+        )
         
         observeEvent(input$update_gen, {
             updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
@@ -412,10 +426,9 @@ shinyServer(
             updateTabsetPanel(session, "inTabset", selected = "census")
         })
         
-        
         output$downloadData_combine_file <- downloadHandler( 
             filename = function(){
-                paste("chime_ratio_combined", ".csv", sep="")
+                paste("chime_ratio_combined", ".csv", sep = "")
             }, 
             
             content = function(file) {

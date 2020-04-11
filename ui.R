@@ -84,17 +84,19 @@ shinyUI(
                 
                 tabsetPanel(
                     id = "inTabset",
-                    
                     type = "tabs",
                     
                     # plot tabs
                     tabPanel("Normal", 
                              br(),
-                             plotlyOutput("plot_norm")
+                             plotlyOutput("plot_norm"),
+                             DT::dataTableOutput("table_result_normal")
                     ),
                     tabPanel("Crisis", 
                              br(),
-                             plotlyOutput("plot_crisis")),
+                             plotlyOutput("plot_crisis"),
+                             DT::dataTableOutput("table_result_crisis")
+                    ),
                     
                     
                     # projected census ------
