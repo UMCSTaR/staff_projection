@@ -165,6 +165,10 @@ shinyUI(
                         "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
                       ),
                       
+                      shinyWidgets::setSliderColor("#404040", 1),
+                      sliderInput("reduction",label="Expected Staff Reduction (eg. sick)", min = 0, max = 100, post  = " %", value = 30),
+                      
+                      
                       actionButton("reset", "Clear Table", icon("table"),
                                    style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                       actionButton("reset_to_ori", "Reset to Default", icon("undo"),

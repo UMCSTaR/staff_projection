@@ -24,6 +24,8 @@ chart_data <- function(chime, ratio_table) {
                is.infinite(projected_bed_per_person),
                0,
                projected_bed_per_person
-             ))
+             ),
+           n_staff_day = projected_bed_per_person*(24/shift_length_hr),
+           n_staff_week = n_staff_day*7/shift_per_week) 
 }
 
