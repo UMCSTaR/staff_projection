@@ -419,7 +419,7 @@ shinyServer(
                 tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
                 mutate(all = as.integer(all)) %>% 
                 filter(n == max(n)) %>%
-                transmute(Role = role, `Max Needed` = all,
+                transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
                           "Total employees" = total_employees_at_full_capacity)
         )
         
@@ -441,7 +441,7 @@ shinyServer(
                 tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
                 mutate(all = as.integer(all)) %>% 
                 filter(n == max(n)) %>%
-                transmute(Role = role, `Max Needed` = all,
+                transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
                           "Total employees" = total_employees_at_full_capacity)
             
         )

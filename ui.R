@@ -91,11 +91,15 @@ shinyUI(
                              br(),
                              plotlyOutput("plot_norm"),
                              br(),
+                             br(),
+                             br(),
                              div(tableOutput("table_result_normal"), style = "font-size:120%")
                     ),
                     tabPanel("Crisis", 
                              br(),
                              plotlyOutput("plot_crisis"),
+                             br(),
+                             br(),
                              br(),
                              div(tableOutput("table_result_crisis"), style = "font-size:120%")
                     ),
@@ -154,20 +158,20 @@ shinyUI(
                       value = "edit_ratio_table",
                       title = "Patient-to-Staff Ratios",
                       
-                     h4("Option 1: Upload Staffing Ratios File (using our", 
-                         a("template", href='data/Staffing_role_and_ratio_template.xlsx',target="_blank", download = 'Staffing_role_and_ratio_template.xlsx'),
-                         ")"),
+                     # h4("Option 1: Upload Staffing Ratios File (using our", 
+                     #     a("template", href='data/Staffing_role_and_ratio_template.xlsx',target="_blank", download = 'Staffing_role_and_ratio_template.xlsx'),
+                     #     ")"),
+                     #  
+                     #  fileInput(
+                     #    "team_in",
+                     #    "Click browse to select file (.xlsx)",
+                     #    multiple = FALSE,
+                     #    accept = c(".xlsx")
+                     #  ),
                       
-                      fileInput(
-                        "team_in",
-                        "Click browse to select file (.xlsx)",
-                        multiple = FALSE,
-                        accept = c(".xlsx")
-                      ),
-                      
-                     hr(),
+                     # hr(),
                      
-                      h4("Option 2: Edit Staffing Ratio Table Below"),
+                      h4("Option 1: Edit Staffing Ratio Table Below"),
                       
                       
                       helpText(
