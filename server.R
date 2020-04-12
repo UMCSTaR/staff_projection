@@ -173,10 +173,10 @@ shinyServer(
             output$x1 <- renderRHandsontable({
                 rhandsontable(
                     reset_table %>% 
-                        rename(
+                        transmute(
+                            Role = role,
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
-                            Role = role,
                             "Shift Length(hour)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
@@ -191,10 +191,10 @@ shinyServer(
             output$x2 <- renderRHandsontable({
                 rhandsontable(
                     reset_table %>% 
-                        rename(
+                        transmute(
+                            Role = role,
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
-                            Role = role,
                             "Shift Length(hour)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
