@@ -154,8 +154,10 @@ shinyUI(
                     tabPanel(
                       value = "edit_ratio_table",
                       title = "Patient-to-Staff Ratios",
-
-                      h4("Option1: Upload Staffing Ratios File"),
+                      
+                     h4("Option1: Upload Staffing Ratios File (using our", 
+                         a("template", href='data/Staffing_role_and_ratio_template.xlsx',target="_blank", download = 'Staffing_role_and_ratio_template.xlsx'),
+                         ")"),
                       
                       fileInput(
                         "team_in",
