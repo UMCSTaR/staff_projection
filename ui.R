@@ -86,18 +86,19 @@ shinyUI(
                     id = "inTabset",
                     type = "tabs",
                     
-                    # tabPanel("test", tableOutput("test")),
-                    
+
                     # plot tabs
                     tabPanel("Normal", 
                              br(),
                              plotlyOutput("plot_norm"),
-                             DT::dataTableOutput("table_result_normal")
+                             br(),
+                             div(tableOutput("table_result_normal"), style = "font-size:120%")
                     ),
                     tabPanel("Crisis", 
                              br(),
                              plotlyOutput("plot_crisis"),
-                             DT::dataTableOutput("table_result_crisis")
+                             br(),
+                             div(tableOutput("table_result_crisis"), style = "font-size:120%")
                     ),
                     
                     
@@ -105,7 +106,9 @@ shinyUI(
                     tabPanel(value = "census",
                              title = "Projected Census",
                              
-                             h4("Option1: Upload projected census from", a("CHIME", href= "https://penn-chime.phl.io/")),
+                             h4("Option1: Upload projected census (from ", a("CHIME", target="_blank", href= "https://penn-chime.phl.io/"), "or using our ", 
+                                a("template", href='data/projected_census_template.csv',target="_blank", download = 'projected_census_template.csv'),
+                                ")"),
                              
                              # helpText(a("Click Here to Download Survey",  href= "https://penn-chime.phl.io/")),
                              

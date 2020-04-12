@@ -97,8 +97,8 @@ shinyServer(
                     select(-ventilated) 
                     
             } else {
-                read_csv(input$chime_up$datapath) %>% 
-                    select(-ventilated) 
+                read_csv(input$chime_up$datapath)  %>% 
+                    select(day, date, hospitalized, icu) 
             }
         }) 
         
@@ -381,32 +381,10 @@ shinyServer(
         
         display_table <- reactive({
             chart_data(chime_edit(),ratio_table(), capacity_edit_table()) %>% 
-                mutate(`Count Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)))
+                mutate(`Accounting for Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)))
         })
         
-        # test ------------
-        capacity_stats =  capacity %>% 
-            select(role, total_employees_at_full_capacity, current_bed_occupancy) %>% 
-            mutate(excess = total_employees_at_full_capacity*(1-current_bed_occupancy))
-        
-        output$test = renderTable(
-            display_table() %>%
-                filter(crisis_mode == "Normal") %>%
-                select(
-                    day,
-                    team_type,
-                    role,
-                    # total_employees_at_full_capacity,
-                    # current_bed_occupancy,
-                    "Count Staff Reduction"
-                ) %>%
-                pivot_wider(names_from = team_type,
-                            values_from = `Count Staff Reduction`) %>% 
-                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>% 
-                mutate(all = as.integer(all)) %>% 
-                left_join(capacity_stats, by = "role") 
-                
-        )
+        output$test = renderTable(display_table())
         
         
         # plots -------
@@ -419,28 +397,61 @@ shinyServer(
             plot_chart_data(display_table(), mode = "Normal")
         })
         
+        # table underneath the plots-------
+        capacity_stats =  capacity %>% 
+            select(role, total_employees_at_full_capacity)
+        
+        output$table_result_normal <- renderTable(
+            display_table() %>% 
+                filter(crisis_mode == "Normal") %>%
+                select(
+                    day,
+                    date,
+                    team_type,
+                    role,
+                    n,
+                    total_employees_at_full_capacity,
+                    `Accounting for Staff Reduction`
+                ) %>%
+                pivot_wider(names_from = team_type,
+                            values_from = `Accounting for Staff Reduction`) %>%
+                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
+                mutate(all = as.integer(all)) %>% 
+                filter(n == max(n)) %>%
+                transmute(Role = role, `Max Needed` = all,
+                          "Total employees" = total_employees_at_full_capacity)
+        )
+        
+        
+        output$table_result_crisis <- renderTable(
+            display_table() %>% 
+                filter(crisis_mode == "Crisis") %>%
+                select(
+                    day,
+                    date,
+                    team_type,
+                    role,
+                    n,
+                    total_employees_at_full_capacity,
+                    `Accounting for Staff Reduction`
+                ) %>%
+                pivot_wider(names_from = team_type,
+                            values_from = `Accounting for Staff Reduction`) %>%
+                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
+                mutate(all = as.integer(all)) %>% 
+                filter(n == max(n)) %>%
+                transmute(Role = role, `Max Needed` = all,
+                          "Total employees" = total_employees_at_full_capacity)
+            
+        )
+        
+        
+        
         # buttons ------
         observeEvent(input$generateButton, {
             updateTabsetPanel(session, "inTabset", selected = "Normal")
         })
         
-        output$table_result_normal <- DT::renderDataTable(
-            capacity_edit_table() %>%
-                transmute(`Role` = role, 
-                          `Need excess` := total_employees_at_full_capacity * (1-current_bed_occupancy),
-                          `Need COVID (ICU)` := rep(0, length(role)),
-                          `Need COVID (non-ICU)` := rep(0, length(role)),
-                          )
-        )
-                               
-        output$table_result_crisis <- DT::renderDataTable(
-            capacity_edit_table() %>%
-                transmute(`Role` = role, 
-                          `Need excess` := total_employees_at_full_capacity * (1-current_bed_occupancy),
-                          `Need COVID (ICU)` := rep(0, length(role)),
-                          `Need COVID (non-ICU)` := rep(0, length(role)),
-                )
-        )
         
         observeEvent(input$update_gen, {
             updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
