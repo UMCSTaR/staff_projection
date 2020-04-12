@@ -58,13 +58,15 @@ shinyServer(
         }) 
         
 
-        capacity_table <- reactive({
-            if (is.null(input$team_in)) {
-                capacity
-            } else {
-                read_xlsx(input$team_in$datapath)
-            }
-        })
+        # capacity_table <- reactive({
+        #     if (is.null(input$team_in)) {
+        #         capacity
+        #     } else {
+        #         read_xlsx(input$team_in$datapath)
+        #     }
+        # })
+        
+        capacity_table <- reactive(capacity)
 
        
         
@@ -159,7 +161,7 @@ shinyServer(
         # Staff ratio editable tables -------
 
         # reset reference table -------
-        reset_table = tibble(role = c("Role1", NA, NA),
+        reset_table = tibble(role = c("Role1", 'Role2', "Role3"),
                              ratio = as.numeric(rep(0, 3)),
                              ratio_s = as.numeric(rep(0, 3)),
                              total_employees_at_full_capacity = as.integer(rep(0, 3)),
