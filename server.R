@@ -172,7 +172,7 @@ shinyServer(
         observeEvent(input$reset,{
             output$x1 <- renderRHandsontable({
                 rhandsontable(
-                    reset_table %>% select(1:3) %>%
+                    reset_table %>% 
                         rename(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
@@ -190,7 +190,7 @@ shinyServer(
             
             output$x2 <- renderRHandsontable({
                 rhandsontable(
-                    reset_table %>% select(1:3) %>%
+                    reset_table %>% 
                         rename(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
