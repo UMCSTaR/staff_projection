@@ -26,7 +26,7 @@ shinyUI(
         sidebarLayout(
             sidebarPanel(width = 3,
                          # census
-                         h4("Step1 - Input Projected Census"),
+                         h4("Step 1: Input Projected Census"),
                          
                          actionButton(
                            "prejected_cesus",
@@ -42,7 +42,7 @@ shinyUI(
                          # staff ratio
                          hr(),
                          
-                         h4("Step2 -Edit Staffing Ratios"),
+                         h4("Step 2: Edit Staffing Ratios"),
                          
                          actionButton("update_gen", "Edit Staffing Ratios",
                                       icon("user-md"),
@@ -54,7 +54,7 @@ shinyUI(
                          
                          
                          hr(),
-                         h4("Step3 - Generate Plots"),
+                         h4("Step 3: Generate Plots"),
                       
                          actionButton(
                            "generateButton",
@@ -63,12 +63,11 @@ shinyUI(
                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
                          
-                         
                          hr(),
                          
-                         p("Download CSV files that produce the plots."),
+                         h4("Step 4: Download Tables"),
                          
-                         downloadButton("downloadData_combine_file", "Download Combined File",
+                         downloadButton("downloadData_combine_file", "Download Combined File (.csv)",
                                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4")
             ),
             
@@ -78,9 +77,9 @@ shinyUI(
                 h3("Project Your Staffing Needs"),
                 
                 tags$style(HTML("
-        .tabbable > .nav > li[class=active]    > a[data-value='Normal'] {background-color: #9dc183; color:black}
-        .tabbable > .nav > li[class=active]    > a[data-value='Crisis'] {background-color: #8D021F; color:white}
-  ")),
+                      .tabbable > .nav > li[class=active]    > a[data-value='Normal'] {background-color: #9dc183; color:black}
+                      .tabbable > .nav > li[class=active]    > a[data-value='Crisis'] {background-color: #8D021F; color:white}
+                ")),
                 
                 tabsetPanel(
                     id = "inTabset",
@@ -106,35 +105,35 @@ shinyUI(
                     tabPanel(value = "census",
                              title = "Projected Census",
                              
-                             h4("Option1: Upload projected census (from ", a("CHIME", target="_blank", href= "https://penn-chime.phl.io/"), "or using our ", 
+                             h4("Option 1: Upload Projected Census (from ",
+                                a("CHIME", target="_blank", href= "https://penn-chime.phl.io/"), "or using our ", 
                                 a("template", href='data/projected_census_template.csv',target="_blank", download = 'projected_census_template.csv'),
-                                ")"),
+                                ")"
+                              ),
                              
                              # helpText(a("Click Here to Download Survey",  href= "https://penn-chime.phl.io/")),
                              
                              fileInput(
                                "chime_up",
-                               "CHIME (.csv)",
+                               "Click browse to select file (.csv)",
                                multiple = FALSE,
                                accept = c("text/csv",
                                           "text/comma-separated-values,text/plain",
                                           ".csv")
                              ),
                              
-                             h4("Option2: Input your own projected census below"),
+                             hr(),
                              
-
+                             h4("Option 2: Input Your Own Projected Census Below"),
+                             
                              p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value",
                                style = "font-size:13px"),
-                             
                              
                              actionButton("reset_census", "Clear Table", icon("table"),
                                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                              
                              actionButton("default_chime", "Reset to Default", icon("undo"),
                                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                             
-                            
                              
                              br(),
                              br(),
@@ -143,8 +142,8 @@ shinyUI(
                              
                              br(),
                              
-                             helpText(strong("hospitalized"), ": n of patients that are hospitalized in", em("Non-ICU"), "units; ",
-                                      strong("icu"), ": n of patients that are in", em("ICU"), "units")
+                             helpText(strong("hospitalized:"), "Number of patients that are hospitalized in", em("Non-ICU"), "units; ", br(),
+                                      strong("icu:"), "Number of patients that are in", em("ICU"), "units")
                              
                              
                              
@@ -155,42 +154,44 @@ shinyUI(
                       value = "edit_ratio_table",
                       title = "Patient-to-Staff Ratios",
                       
-                     h4("Option1: Upload Staffing Ratios File (using our", 
+                     h4("Option 1: Upload Staffing Ratios File (using our", 
                          a("template", href='data/Staffing_role_and_ratio_template.xlsx',target="_blank", download = 'Staffing_role_and_ratio_template.xlsx'),
                          ")"),
                       
                       fileInput(
                         "team_in",
-                        "Staffing Ratios (.xlsx)",
+                        "Click browse to select file (.xlsx)",
                         multiple = FALSE,
                         accept = c(".xlsx")
                       ),
                       
-                      h4("Option2: Edit Staffing Ratio Table Below"),
+                     hr(),
+                     
+                      h4("Option 2: Edit Staffing Ratio Table Below"),
                       
                       
                       helpText(
                         strong("Important note:"),
                         "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
                       ),
+                     br(),
                       
                       shinyWidgets::setSliderColor("#404040", 1),
                       sliderInput("reduction",label="Expected Staff Reduction (eg. sick)", min = 0, max = 100, post  = " %", value = 30),
                       
-                      
+                     br(),
+                     
+                     p(
+                       strong("Right click"),
+                       "in a cell to add and delete row;",
+                       "select cell and type the new value",
+                       style = "font-size:13px"
+                     ),
+                     
                       actionButton("reset", "Clear Table", icon("table"),
                                    style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                       actionButton("reset_to_ori", "Reset to Default", icon("undo"),
                                    style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                      br(),
-                      br(),
-                      
-                      p(
-                        strong("Right click"),
-                        "in a cell to add and delete row;",
-                        "select cell and type the new value",
-                        style = "font-size:16px"
-                      ),
                       
                       h4("ICU"),
                       
@@ -208,12 +209,6 @@ shinyUI(
                       
                       br(),
                       
-                      h4("Capacity"),
-                      
-                      div(rHandsontableOutput("x3"), style = "font-size: 120%"),
-                      
-                      br(),
-                      
                       
                       # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
                       #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
@@ -226,23 +221,42 @@ shinyUI(
                       column(
                         12,
                         br(),
-                        tags$div(
-                          "Role: List of possible staff roles",
-                          tags$br(),
-                          "Ratio (normal) = the patient:staff ratio (i.e. how many patients each staff member cares for)",
-                          tags$br(),
-                          "Ratio (Crisis Mode) = the patient:staff ratio during a ‘crisis mode’ (ie. the maximum number patients each staff member can care for)",
-                          tags$br(),
-                          tags$br(),
-                          tags$br(),
-                          "* Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.",
-                          br(),
-                          br()
+                        helpText(
+                          strong("Role: "),
+                           "List of possible staff roles",
+                           br(),
+                           strong("Ratio (Normal): "),
+                           "The patient:staff ratio (i.e. how many patients each staff member cares for)",
+                           br(),
+                           strong("Ratio (Crisis): "),
+                           "The patient:staff ratio during a ‘crisis mode’ (i.e. the maximum number patients each staff member can care for)",
+                           br(),
+                           br(),
+                           strong("*"), em("Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.")
                         )
                       )
+                    ),
+                    
+                    # Capacity tab UI code here
+                    tabPanel(
+                      value = "capacity_table",
+                      title = "Capacity",
+                      br(),
+                      h4("Option 1: Edit Staff Capacity Table Below"),
+                      
+                      p(
+                        strong("Right click"),
+                        "in a cell to add and delete row;",
+                        "select cell and type the new value",
+                        style = "font-size:13px"
+                      ),
+                      
+                      actionButton("clear_capacity", "Clear Table", icon("table"),
+                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      actionButton("reset_default_capacity", "Reset to Default", icon("undo"),
+                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      div(rHandsontableOutput("x3"), style = "font-size: 120%"),
                     )
-                    
-                    
                 ))
         )
     )

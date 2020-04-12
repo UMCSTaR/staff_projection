@@ -42,7 +42,7 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
     )
   
   if (interactive)  
-    plotly::ggplotly(p)
+    plotly::ggplotly(p, height = 450, width = 800)
   else
     p
 }
