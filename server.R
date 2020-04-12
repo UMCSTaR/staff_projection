@@ -384,6 +384,30 @@ shinyServer(
                 mutate(`Count Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)))
         })
         
+        # test ------------
+        capacity_stats =  capacity %>% 
+            select(role, total_employees_at_full_capacity, current_bed_occupancy) %>% 
+            mutate(excess = total_employees_at_full_capacity*(1-current_bed_occupancy))
+        
+        output$test = renderTable(
+            display_table() %>%
+                filter(crisis_mode == "Normal") %>%
+                select(
+                    day,
+                    team_type,
+                    role,
+                    # total_employees_at_full_capacity,
+                    # current_bed_occupancy,
+                    "Count Staff Reduction"
+                ) %>%
+                pivot_wider(names_from = team_type,
+                            values_from = `Count Staff Reduction`) %>% 
+                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>% 
+                mutate(all = as.integer(all)) %>% 
+                left_join(capacity_stats, by = "role") 
+                
+        )
+        
         
         # plots -------
         output$plot_crisis <- renderPlotly({
