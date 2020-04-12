@@ -21,7 +21,7 @@ team_ratio = readxl::read_xlsx("./data/team_ratio_shift.xlsx") %>%
 
 
 capacity_def = capacity %>% 
-    select("role", "total_employees_at_full_capacity", "current_bed_occupancy") %>%
+    select("role", "total_employees_at_full_capacity") %>%
     mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity))
     
                
@@ -86,7 +86,7 @@ shinyServer(
         
         # capacity
         capacity_gen = reactive({
-            capacity_table() %>% select("role", "total_employees_at_full_capacity", "current_bed_occupancy")
+            capacity_table() %>% select("role", "total_employees_at_full_capacity")
         })
         
         
@@ -163,13 +163,12 @@ shinyServer(
                              ratio = as.numeric(rep(0, 3)),
                              ratio_s = as.numeric(rep(0, 3)),
                              total_employees_at_full_capacity = as.integer(rep(0, 3)),
-                             current_bed_occupancy = as.numeric(rep(0, 3)),
                              shift_length_hr = rep(0,3),
                              shift_per_week = rep(0,3)
                              )
         
         # reset to clear table
-        observeEvent(input$reset,{
+        observeEvent(input$reset, {
             output$x1 <- renderRHandsontable({
                 rhandsontable(
                     reset_table %>% 
@@ -202,17 +201,19 @@ shinyServer(
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
-            
+        })
+        
+        observeEvent(input$clear_capacity, {
             output$x3 <- renderRHandsontable({
                 rhandsontable(
-                    reset_table %>% select(1, 4:5) %>%
+                    reset_table %>% 
+                        select(role, total_employees_at_full_capacity) %>%
                         mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>%
                         rename(
                             "Total employees (Max)" = total_employees_at_full_capacity,
-                            "Current bed occupancy" = current_bed_occupancy,
                             Role = role
                         ),
-                        rowHeaders = FALSE, width = 570, stretchH = "all"
+                    rowHeaders = FALSE, width = 570, stretchH = "all"
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -249,14 +250,15 @@ shinyServer(
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
-            
+        })
+        
+        observeEvent(input$reset_default_capacity, {
             output$x3 <- renderRHandsontable({
                 rhandsontable(
                     capacity_def %>%
                         mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>%
                         rename(
                             "Total employees (Max)" = total_employees_at_full_capacity,
-                            "Current bed occupancy" = current_bed_occupancy,
                             Role = role
                         ), rowHeaders = FALSE, width = 570, stretchH = "all"
                 ) %>% 
@@ -303,7 +305,6 @@ shinyServer(
                     mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>%
                     rename(
                         "Total employees (Max)" = total_employees_at_full_capacity,
-                        "Current bed occupancy" = current_bed_occupancy,
                         Role = role
                     ), rowHeaders = FALSE, width = 570, stretchH = "all"
             ) %>% 
@@ -361,7 +362,6 @@ shinyServer(
                         # mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>%
                         # rename(
                         #     "Total employees (Max)" = total_employees_at_full_capacity,
-                        #     "Current bed occupancy" = current_bed_occupancy,
                         #     Role = role
                         # )
                 )
@@ -369,7 +369,6 @@ shinyServer(
             values$df = hot_to_r(input$x3) %>%
                 rename(
                     total_employees_at_full_capacity = "Total employees (Max)",
-                    current_bed_occupancy = "Current bed occupancy",
                     role = "Role"
                 )
         })
