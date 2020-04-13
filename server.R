@@ -402,26 +402,38 @@ shinyServer(
         capacity_stats =  capacity %>% 
             select(role, total_employees_at_full_capacity)
         
-        output$table_result_normal <- renderTable(
-            display_table() %>% 
+        max_date <- reactive({
+            display_table() %>%
+                filter(crisis_mode == "Normal",
+                       n == max(n)) %>%
+                select(day) %>%
+                unique() %>% 
+                pull()
+        })
+        
+        
+        
+        
+        output$table_result_normal <- renderTable({
+            
+            display_table() %>%
                 filter(crisis_mode == "Normal") %>%
                 select(
                     day,
                     date,
                     team_type,
                     role,
-                    n,
                     total_employees_at_full_capacity,
                     `Accounting for Staff Reduction`
                 ) %>%
                 pivot_wider(names_from = team_type,
                             values_from = `Accounting for Staff Reduction`) %>%
                 tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
-                mutate(all = as.integer(all)) %>% 
-                filter(n == max(n)) %>%
+                mutate(all = as.integer(all)) %>%
+                filter(day == max_date()) %>%
                 transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
                           "Total employees" = total_employees_at_full_capacity)
-        )
+        })
         
         
         output$table_result_crisis <- renderTable(
@@ -432,15 +444,14 @@ shinyServer(
                     date,
                     team_type,
                     role,
-                    n,
                     total_employees_at_full_capacity,
                     `Accounting for Staff Reduction`
                 ) %>%
                 pivot_wider(names_from = team_type,
                             values_from = `Accounting for Staff Reduction`) %>%
                 tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
-                mutate(all = as.integer(all)) %>% 
-                filter(n == max(n)) %>%
+                mutate(all = as.integer(all)) %>%
+                filter(day == max_date()) %>%
                 transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
                           "Total employees" = total_employees_at_full_capacity)
             
