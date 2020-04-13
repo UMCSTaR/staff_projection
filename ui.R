@@ -48,10 +48,16 @@ shinyUI(
                                       icon("user-md"),
                                       style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                          
-                         
                          br(),
                          br(),
                          
+                         actionButton("update_capacity", "Enter Your Total Employees",
+                                      icon("clipboard-list"),
+                                      style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                         
+                         
+                         br(),
+
                          
                          hr(),
                          h4("Step 3: Generate Plots"),
@@ -244,8 +250,7 @@ shinyUI(
                     # Capacity tab UI code here
                     tabPanel(
                       value = "capacity_table",
-                      title = "Capacity",
-                      br(),
+                      title = "Total Employees",
                       h4("Option 1: Edit Staff Capacity Table Below"),
                       
                       p(
@@ -254,11 +259,15 @@ shinyUI(
                         "select cell and type the new value",
                         style = "font-size:13px"
                       ),
-                      
+
                       actionButton("clear_capacity", "Clear Table", icon("table"),
                                    style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                       actionButton("reset_default_capacity", "Reset to Default", icon("undo"),
                                    style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                      
+                      br(),
+                      br(),
+                      
                       div(rHandsontableOutput("x3"), style = "font-size: 120%"),
                     )
                 ))

@@ -469,6 +469,11 @@ shinyServer(
             updateTabsetPanel(session, "inTabset", selected = "edit_ratio_table")
         })
         
+        observeEvent(input$update_capacity, {
+            updateTabsetPanel(session, "inTabset", selected = "capacity_table")
+        })
+        
+        
         observeEvent(input$prejected_cesus, {
             updateTabsetPanel(session, "inTabset", selected = "census")
         })
