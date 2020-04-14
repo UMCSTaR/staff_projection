@@ -58,7 +58,6 @@ shinyUI(
                          
                          
                          
-                         
                          # staff ratio
                          hr(),
                          
@@ -111,6 +110,7 @@ shinyUI(
                     id = "inTabset",
                     type = "tabs",
                     
+                    tabPanel("test", tableOutput("test")),
 
                     # plot tabs
                     tabPanel("Normal", 

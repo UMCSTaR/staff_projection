@@ -1,4 +1,9 @@
-chart_data <- function(chime, ratio_table, capacity) {
+chart_data <- function(chime, ratio_table, capacity,
+                       total_bed = 800,
+                       icu_perc = 50/100,
+                       capacity_perc = 81/100,
+                       advanced = TRUE) {
+  
   require(tidyverse)
   
   chime_long = chime %>% 
@@ -17,7 +22,7 @@ chart_data <- function(chime, ratio_table, capacity) {
   
   all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity, by = c("role"))
 
-  all %>% 
+  all_cov = all %>% 
     mutate(projected_bed_per_person = n / n_bed_per_person,
            projected_bed_per_person = 
              if_else(
@@ -27,5 +32,31 @@ chart_data <- function(chime, ratio_table, capacity) {
              ),
            n_staff_day = projected_bed_per_person*(24/shift_length_hr),
            n_staff_week = n_staff_day*7/shift_per_week) 
+  
+  
+  all_cov_and_non_cov = all_cov %>%
+    mutate(
+      non_cov_pt = ifelse(
+        team_type == "General",
+        (1 - icu_perc) * capacity_perc * total_bed - n,
+        icu_perc * capacity_perc * total_bed - n
+      ),
+      n_staff_non_covid = non_cov_pt / n_bed_per_person,
+      n_staff_non_covid =
+        if_else(is.infinite(n_staff_non_covid),
+                0,
+                n_staff_non_covid),
+      n_staff_non_covid_day = n_staff_non_covid * (24 / shift_length_hr),
+      n_staff_non_covid_week = n_staff_day * 7 / shift_per_week
+    ) 
+
+  
+  
+  if (advanced)
+    all_cov_and_non_cov
+   else
+    all_cov
 }
+
+
 

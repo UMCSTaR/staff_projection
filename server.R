@@ -100,9 +100,18 @@ shinyServer(
             toggle(id = "advanced_input_help", condition = input$advanced_census_input)
         })
         
+        # advanced inputs cal---------
+       
+        
+        observeEvent(input$advanced_census_input,{
+            if(input$advanced_census_input == TRUE){
+                output$test <- renderTable(display_table())
+            }
+        })
         
         
-        # CHIME ---
+        
+        # CHIME ----
         chime_table <- reactive({
             if (is.null(input$chime_up)) {
                 chime %>% 
@@ -392,22 +401,37 @@ shinyServer(
         
         display_table <- reactive({
             chart_data(chime_edit(),ratio_table(), capacity_edit_table()) %>% 
-                mutate(`Accounting for Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)))
+                mutate(`Accounting for Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)),
+                       all_covd_non_covid_staff = as.integer(ceiling(`Accounting for Staff Reduction` + n_staff_non_covid_week)))
         })
         
-        output$test = renderTable(display_table())
         
         
         # plots -------
-        output$plot_crisis <- renderPlotly({
-            plot_chart_data(display_table(), mode = "Crisis")
+        observeEvent(input$advanced_census_input,{
+            if(input$advanced_census_input == TRUE){
+                # advanced inputs including non coivd
+                output$plot_crisis <- renderPlotly({
+                    plot_chart_data(display_table(), mode = "Crisis", staff_needs = quo(`All covd non covid staff`))
+                })
+                
+                output$plot_norm <- renderPlotly({
+                    plot_chart_data(display_table(), mode = "Normal", staff_needs = quo(`All covd non covid staff`))
+                })
+                
+            } else {
+                output$plot_crisis <- renderPlotly({
+                    plot_chart_data(display_table(), mode = "Crisis")
+                })
+                
+                output$plot_norm <- renderPlotly({
+                    plot_chart_data(display_table(), mode = "Normal")
+                })
+            }
         })
         
-        
-        output$plot_norm <- renderPlotly({
-            plot_chart_data(display_table(), mode = "Normal")
-        })
-        
+      
+    
         # table underneath the plots-------
         capacity_stats =  capacity %>% 
             select(role, total_employees_at_full_capacity)
@@ -421,51 +445,57 @@ shinyServer(
                 pull()
         })
         
-        
-        
-        
-        output$table_result_normal <- renderTable({
-            
-            display_table() %>%
-                filter(crisis_mode == "Normal") %>%
-                select(
-                    day,
-                    date,
-                    team_type,
-                    role,
-                    total_employees_at_full_capacity,
-                    `Accounting for Staff Reduction`
-                ) %>%
-                pivot_wider(names_from = team_type,
-                            values_from = `Accounting for Staff Reduction`) %>%
-                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
-                mutate(all = as.integer(all)) %>%
-                filter(day == max_date()) %>%
-                transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
-                          "Total employees" = total_employees_at_full_capacity)
+        observeEvent(input$advanced_census_input,{
+            if(input$advanced_census_input == TRUE){
+                # advanced inputs including non coivd
+                output$table_result_normal <- renderTable({
+                    max_table_under_plot(
+                        display_table(),
+                        mode = "Normal",
+                        total_staff_value = quo(all_covd_non_covid_staff)
+                    ) %>%
+                        filter(day == max_date()) %>%
+                        select(-day)
+                })
+                
+                
+                output$table_result_crisis <- renderTable({
+                    max_table_under_plot(
+                        display_table(),
+                        mode = "Crisis",
+                        total_staff_value = quo(all_covd_non_covid_staff)
+                    ) %>%
+                        filter(day == max_date()) %>%
+                        select(-day)
+                })
+                
+            } else {
+                output$table_result_normal <- renderTable({
+                    max_table_under_plot(
+                        display_table(),
+                        mode = "Normal",
+                        total_staff_value = quo(`Accounting for Staff Reduction`)
+                    ) %>%
+                        filter(day == max_date()) %>%
+                        select(-day)
+                })
+                
+                
+                output$table_result_crisis <- renderTable({
+                    max_table_under_plot(
+                        display_table(),
+                        mode = "Crisis",
+                        total_staff_value = quo(`Accounting for Staff Reduction`)
+                    ) %>%
+                        filter(day == max_date()) %>%
+                        select(-day)
+                })
+            }
         })
         
         
-        output$table_result_crisis <- renderTable(
-            display_table() %>% 
-                filter(crisis_mode == "Crisis") %>%
-                select(
-                    day,
-                    date,
-                    team_type,
-                    role,
-                    total_employees_at_full_capacity,
-                    `Accounting for Staff Reduction`
-                ) %>%
-                pivot_wider(names_from = team_type,
-                            values_from = `Accounting for Staff Reduction`) %>%
-                tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
-                mutate(all = as.integer(all)) %>%
-                filter(day == max_date()) %>%
-                transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
-                          "Total employees" = total_employees_at_full_capacity)
-            
-        )
+        
+       
         
         
         
@@ -545,6 +575,7 @@ shinyServer(
                 writexl::write_xlsx(all_ratio, path = con)
             }
             
+        
             
             
             

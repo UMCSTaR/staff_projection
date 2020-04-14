@@ -1,4 +1,4 @@
-plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TRUE) {
+plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, interactive = TRUE) {
   require(tidyverse)
   require(glue)
   
@@ -8,7 +8,7 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
     rename_all(stringr::str_to_title) %>% 
     rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>% 
     rename('Projected Number of Staff' = `Projected bed per person`,
-           'Staff Needed'= `Accounting For Staff Reduction`)
+           'Staff Needed'= !!staff_needs)
   
   p = d_processed %>%  
     ggplot(
