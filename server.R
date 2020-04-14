@@ -92,6 +92,16 @@ shinyServer(
         })
         
         
+        # capacity toggle --------
+        observe({
+            toggle(id = "total_bed", condition = input$advanced_census_input)
+            toggle(id = "icu_perc", condition = input$advanced_census_input)
+            toggle(id = "capacity", condition = input$advanced_census_input)
+            toggle(id = "advanced_input_help", condition = input$advanced_census_input)
+        })
+        
+        
+        
         # CHIME ---
         chime_table <- reactive({
             if (is.null(input$chime_up)) {
@@ -534,6 +544,10 @@ shinyServer(
                 
                 writexl::write_xlsx(all_ratio, path = con)
             }
+            
+            
+            
+            
         )
         
         

@@ -25,7 +25,7 @@ shinyUI(
         # sidebar -------
         sidebarLayout(
             sidebarPanel(width = 3,
-                         # census
+                         # step1---------
                          h4("Step 1: Input Projected Census"),
                          
                          actionButton(
@@ -37,6 +37,26 @@ shinyUI(
                          
                          br(),
                          br(),
+                         
+                         useShinyjs(),
+                         shinyWidgets::materialSwitch(inputId="advanced_census_input", label = "Advanced", value = FALSE, status = "success"),
+                         helpText(id = "advanced_input_help" ,"Estimate staffing for COVID and non-COVID patients"),
+                         
+                         numericInput(
+                             "total_bed",
+                             "Total number of beds",
+                             200,
+                             min = 0,
+                             max = 1000,
+                             step = 10,
+                             width = "70%"
+                         ),
+                         
+                         sliderInput("icu_perc",label="Proportion of all beds allocated to ICU", min = 0, max = 100, post  = " %", value = 30),
+                         
+                         sliderInput("capacity",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 81),
+                         
+                         
                          
                          
                          # staff ratio
