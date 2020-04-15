@@ -1,4 +1,4 @@
-plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TRUE) {
+plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, interactive = TRUE) {
   require(tidyverse)
   require(glue)
   
@@ -8,7 +8,7 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
     rename_all(stringr::str_to_title) %>% 
     rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>% 
     rename('Projected Number of Staff' = `Projected bed per person`,
-           'Staff Needed'= `Accounting For Staff Reduction`)
+           'Staff Needed'= !!staff_needs)
   
   p = d_processed %>%  
     ggplot(
@@ -25,15 +25,15 @@ plot_chart_data <- function(.data, mode = 'Normal', digits = 1, interactive = TR
       x       = "",
       y       = "",
       colour  = "Roles",
-      linetype = "Capacity",
+      # linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
-    geom_hline(
-      # aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
-      # size = 0.5, alpha = 0.8, show.legend = FALSE
-      aes(yintercept = `Total employees at full capacity`, col = Role),
-      size = 0.3, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
-    ) +
+    # geom_hline(
+    #   # aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
+    #   # size = 0.5, alpha = 0.8, show.legend = FALSE
+    #   aes(yintercept = `Total employees at full capacity`, col = Role),
+    #   size = 0.3, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
+    # ) +
     scico::scale_color_scico_d() + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
     theme_minimal() +

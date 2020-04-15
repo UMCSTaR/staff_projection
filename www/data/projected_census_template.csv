@@ -1,5 +1,4 @@
-day,date,hospitalized,icu,ventilated
-0,4/21/20,0,0,0
-1,4/22/20,,,
-2,4/23/20,,,
-,,,,
+day,date,hospitalized,icu
+0,4/21/20,0,0
+1,4/22/20,,
+2,4/23/20,,
