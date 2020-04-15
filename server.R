@@ -413,20 +413,20 @@ shinyServer(
         observeEvent(input$advanced_census_input,{
             if(input$advanced_census_input == TRUE){
                 # advanced inputs including non coivd
-                output$plot_crisis <- renderPlotly({
+                output$plot_crisis <- renderHighchart({
                     plot_chart_data(display_table(), mode = "Crisis", staff_needs = quo(`All covd non covid staff`))
                 })
                 
-                output$plot_norm <- renderPlotly({
+                output$plot_norm <- renderHighchart({
                     plot_chart_data(display_table(), mode = "Normal", staff_needs = quo(`All covd non covid staff`))
                 })
                 
             } else {
-                output$plot_crisis <- renderPlotly({
+                output$plot_crisis <- renderHighchart({
                     plot_chart_data(display_table(), mode = "Crisis")
                 })
                 
-                output$plot_norm <- renderPlotly({
+                output$plot_norm <- renderHighchart({
                     plot_chart_data(display_table(), mode = "Normal")
                 })
             }

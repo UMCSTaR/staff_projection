@@ -117,7 +117,7 @@ shinyUI(
                     # plot tabs
                     tabPanel("Normal", 
                              br(),
-                             plotlyOutput("plot_norm"),
+                             highchartOutput("plot_norm"),
                              br(),
                              br(),
                              br(),
@@ -125,7 +125,7 @@ shinyUI(
                     ),
                     tabPanel("Crisis", 
                              br(),
-                             plotlyOutput("plot_crisis"),
+                             highchartOutput("plot_crisis"),
                              br(),
                              br(),
                              br(),
