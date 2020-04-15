@@ -102,8 +102,6 @@ shinyServer(
         })
         
         
-        
-        
         # CHIME ----
         chime_table <- reactive({
             if (is.null(input$chime_up)) {
@@ -388,10 +386,16 @@ shinyServer(
         })
         
         
+        # Compute ratio table -- combines ICU and General ratio tables into one
         ratio_table <- reactive({
             rbind(gen_ratio_table(), icu_ratio_table())
         })
         
+        
+        # (1) Puts together other datasets into one dataframe -- for example, CHIME table, Ratio table (from above),
+        # .. and Capacity table.
+        # (2) Sends the data to `chart_data` function for processing -- also make a few column changes
+        # (3) Result is saved in `display_table`
         display_table <- reactive({
             chart_data(chime_edit(), ratio_table(), capacity_edit_table(),
                        total_bed = input$total_bed,
@@ -412,7 +416,7 @@ shinyServer(
         # plots -------
         observeEvent(input$advanced_census_input,{
             if(input$advanced_census_input == TRUE){
-                # advanced inputs including non coivd
+                # advanced inputs including non covid
                 output$plot_crisis <- renderPlotly({
                     plot_chart_data(display_table(), mode = "Crisis", staff_needs = quo(`All covd non covid staff`))
                 })
