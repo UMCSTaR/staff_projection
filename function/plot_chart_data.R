@@ -16,9 +16,10 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       summarize(`Staff Needed` = sum(`Staff Needed`),
                 `Total employees at full capacity` = unique(`Total employees at full capacity`)) %>%
       mutate(`Team type` = 'Total') %>% ungroup()
-  ))
-  
-  p = d_processed %>%  
+  )) %>%
+    mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
+
+  p = d_processed %>%
     ggplot(
       aes(
         x = Date,
@@ -42,7 +43,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
     ) +
     scico::scale_color_scico_d() + # change if needed
-    facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
+    facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)

@@ -68,8 +68,6 @@ shinyServer(
         # })
         
         capacity_table <- reactive(capacity)
-
-       
         
         # ICU
         team_icu_react = reactive({
