@@ -1,7 +1,10 @@
 chart_data <- function(chime, ratio_table, capacity,
-                       total_bed = 800,
-                       icu_perc = 50/100,
-                       capacity_perc = 81/100,
+                       # total_bed = 800,
+                       total_bed,
+                       # icu_perc = 50/100,
+                       icu_perc,
+                       # capacity_perc = 81/100,
+                       capacity_perc,
                        advanced = TRUE) {
   
   require(tidyverse)
@@ -41,13 +44,15 @@ chart_data <- function(chime, ratio_table, capacity,
         (1 - icu_perc) * capacity_perc * total_bed - n,
         icu_perc * capacity_perc * total_bed - n
       ),
+      # non-negative non-cov_pt
+      # non_cov_pt = abs(non_cov_pt),
       n_staff_non_covid = non_cov_pt / n_bed_per_person,
       n_staff_non_covid =
         if_else(is.infinite(n_staff_non_covid),
                 0,
                 n_staff_non_covid),
       n_staff_non_covid_day = n_staff_non_covid * (24 / shift_length_hr),
-      n_staff_non_covid_week = n_staff_day * 7 / shift_per_week
+      n_staff_non_covid_week = n_staff_non_covid_day * 7 / shift_per_week,
     ) 
 
   

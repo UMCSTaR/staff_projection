@@ -25,15 +25,15 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       x       = "",
       y       = "",
       colour  = "Roles",
-      linetype = "Capacity",
+      # linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
-    geom_hline(
-      # aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
-      # size = 0.5, alpha = 0.8, show.legend = FALSE
-      aes(yintercept = `Total employees at full capacity`, col = Role),
-      size = 0.3, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
-    ) +
+    # geom_hline(
+    #   # aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
+    #   # size = 0.5, alpha = 0.8, show.legend = FALSE
+    #   aes(yintercept = `Total employees at full capacity`, col = Role),
+    #   size = 0.3, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
+    # ) +
     scico::scale_color_scico_d() + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
     theme_minimal() +

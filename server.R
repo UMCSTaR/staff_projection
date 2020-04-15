@@ -41,6 +41,7 @@ team_gen = team_ratio %>%
 # data procssing for plot
 source("function/chart_data.R")
 source("function/plot_chart_data.R")
+source("function/max_table_under_plot.R")
 
 
 # Define server 
@@ -96,18 +97,10 @@ shinyServer(
         observe({
             toggle(id = "total_bed", condition = input$advanced_census_input)
             toggle(id = "icu_perc", condition = input$advanced_census_input)
-            toggle(id = "capacity", condition = input$advanced_census_input)
+            toggle(id = "capacity_perc", condition = input$advanced_census_input)
             toggle(id = "advanced_input_help", condition = input$advanced_census_input)
         })
         
-        # advanced inputs cal---------
-       
-        
-        observeEvent(input$advanced_census_input,{
-            if(input$advanced_census_input == TRUE){
-                output$test <- renderTable(display_table())
-            }
-        })
         
         
         
@@ -197,7 +190,7 @@ shinyServer(
                             Role = role,
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
-                            "Shift Length(hour)" = shift_length_hr,
+                            "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
                         mutate_if(is.numeric, as.integer),
@@ -215,7 +208,7 @@ shinyServer(
                             Role = role,
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
-                            "Shift Length(hour)" = shift_length_hr,
+                            "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
                         mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
@@ -249,7 +242,7 @@ shinyServer(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
                             Role = role,
-                            "Shift Length(hour)" = shift_length_hr,
+                            "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
                         mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
@@ -264,7 +257,7 @@ shinyServer(
                             "Ratio (Normal)" = ratio,
                             "Ratio (Crisis)" = ratio_s,
                             Role = role,
-                            "Shift Length(hour)" = shift_length_hr,
+                            "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
                         mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
@@ -295,7 +288,7 @@ shinyServer(
                         "Ratio (Normal)" = ratio,
                         "Ratio (Crisis)" = ratio_s,
                         Role = role,
-                        "Shift Length(hour)" = shift_length_hr,
+                        "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
                     ) %>%
                     mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
@@ -311,7 +304,7 @@ shinyServer(
                         "Ratio (Normal)" = ratio,
                         "Ratio (Crisis)" = ratio_s,
                         Role = role,
-                        "Shift Length(hour)" = shift_length_hr,
+                        "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
                     ) %>%
                     mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
@@ -350,7 +343,7 @@ shinyServer(
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
                        n_bed_per_person_crisis = "Ratio (Crisis)",
-                       shift_length_hr = "Shift Length(hour)",
+                       shift_length_hr = "Shift Length(hours)",
                        shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
         })
@@ -371,7 +364,7 @@ shinyServer(
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
                        n_bed_per_person_crisis = "Ratio (Crisis)",
-                       shift_length_hr = "Shift Length(hour)",
+                       shift_length_hr = "Shift Length(hours)",
                        shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
         })
@@ -400,11 +393,20 @@ shinyServer(
         })
         
         display_table <- reactive({
-            chart_data(chime_edit(),ratio_table(), capacity_edit_table()) %>% 
+            chart_data(chime_edit(), ratio_table(), capacity_edit_table(),
+                       total_bed = input$total_bed,
+                       capacity_perc = input$capacity_perc/100,
+                       icu_perc = input$icu_perc/100) %>%
                 mutate(`Accounting for Staff Reduction` = as.integer(n_staff_week* (1+input$reduction/100)),
                        all_covd_non_covid_staff = as.integer(ceiling(`Accounting for Staff Reduction` + n_staff_non_covid_week)))
         })
         
+        # advanced inputs cal---------
+        
+        # output$test <- renderTable(display_table() %>% 
+        #                                select(n_staff_non_covid_week, non_cov_pt, everything()) %>% 
+        #                                filter(n_staff_non_covid_week<0))
+        # 
         
         
         # plots -------
@@ -445,10 +447,22 @@ shinyServer(
                 pull()
         })
         
+        # here -------------
+        
         observeEvent(input$advanced_census_input,{
             if(input$advanced_census_input == TRUE){
                 # advanced inputs including non coivd
+                
                 output$table_result_normal <- renderTable({
+                    
+                    # validate(
+                    #     need(display_table() %>% 
+                    #              filter(n_staff_non_covid_week == min(n_staff_non_covid_week)) %>% 
+                    #              distinct(n_staff_non_covid_week) %>% 
+                    #              pull()> 0, "Your current inputs are not valid")
+                    # )
+                    
+                    
                     max_table_under_plot(
                         display_table(),
                         mode = "Normal",

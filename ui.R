@@ -7,20 +7,20 @@ library(plotly)
 # Define UI for application that draws a histogram
 shinyUI(
     fluidPage(
-        titlePanel("Projected Staffing Demand"),
-        ("This application is intended to work with a"),
-        strong("projected census"),
-        ("file from CHIME (e.g. 2020-04-02_projected_census.csv)"),
-        ("along with a"),
-        strong("staffing tables"),
-        (
-            "file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template or your edited staffing ratios."
-        ),
-        em(
-            "The tools at the top-right of the figure can help you navigate the resulting graph."
-        ),
+        # titlePanel("Projected Staffing Demand"),
+        # ("This application is intended to work with a"),
+        # strong("projected census"),
+        # ("file from CHIME (e.g. 2020-04-02_projected_census.csv)"),
+        # ("along with a"),
+        # strong("staffing tables"),
+        # (
+        #     "file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template or your edited staffing ratios."
+        # ),
+        # em(
+        #     "The tools at the top-right of the figure can help you navigate the resulting graph."
+        # ),
         
-        hr(),
+        # hr(),
         
         # sidebar -------
         sidebarLayout(
@@ -45,16 +45,18 @@ shinyUI(
                          numericInput(
                              "total_bed",
                              "Total number of beds",
-                             200,
+                             1000,
                              min = 0,
                              max = 1000,
                              step = 10,
                              width = "70%"
                          ),
                          
-                         sliderInput("icu_perc",label="Proportion of all beds allocated to ICU", min = 0, max = 100, post  = " %", value = 30),
+                         shinyWidgets::setSliderColor("#404040", c(3)),
                          
-                         sliderInput("capacity",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 81),
+                         sliderInput("icu_perc", label="Proportion of all beds allocated to ICU", min = 0, max = 100, post  = " %", value = 30),
+                         
+                         sliderInput("capacity_perc",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 91),
                          
                          
                          
@@ -110,7 +112,7 @@ shinyUI(
                     id = "inTabset",
                     type = "tabs",
                     
-                    tabPanel("test", tableOutput("test")),
+                    # tabPanel("test", tableOutput("test")),
 
                     # plot tabs
                     tabPanel("Normal", 
@@ -135,7 +137,7 @@ shinyUI(
                     tabPanel(value = "census",
                              title = "Projected Census",
                              
-                             h4("Option 1: Upload Projected Census (from ",
+                             h4("Option 1: Upload your projected patient census (from ",
                                 a("CHIME", target="_blank", href= "https://penn-chime.phl.io/"), "or using our ", 
                                 a("template", href='data/projected_census_template.csv',target="_blank", download = 'projected_census_template.csv'),
                                 ")"
@@ -154,7 +156,7 @@ shinyUI(
                              
                              hr(),
                              
-                             h4("Option 2: Input Your Own Projected Census Below"),
+                             h4("Option 2: Input your projected patient census manually"),
                              
                              p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value",
                                style = "font-size:13px"),
@@ -204,10 +206,8 @@ shinyUI(
                         strong("Important note:"),
                         "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
                       ),
-                     br(),
-                      
-                      shinyWidgets::setSliderColor("#404040", 1),
-                      sliderInput("reduction",label="Expected Staff Reduction (eg. sick)", min = 0, max = 100, post  = " %", value = 30),
+
+                      sliderInput("reduction",label="Expected staffing reduction (due to sickness, quarantine restrictions, or other)", min = 0, max = 100, post  = " %", value = 30, width = "600px"),
                       
                      br(),
                      
