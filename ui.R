@@ -93,6 +93,11 @@ shinyUI(
                            icon("chart-line"),
                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
+                         br(),
+                         br(),
+                         useShinyjs(),
+                         shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = "Show ICU and Non-ICU plots", value = FALSE, status = "success"),
+                         
                          
                          hr(),
                          
@@ -118,10 +123,11 @@ shinyUI(
                     
                     # tabPanel("test", tableOutput("test")),
 
-                    # plot tabs
+                    # plots ------
                     tabPanel("Normal", 
                              br(),
-                             plotlyOutput("plot_norm"),
+                             # plotlyOutput("plot_norm"),
+                             uiOutput("plot_norm"),
                              br(),
                              br(),
                              br(),
@@ -129,7 +135,8 @@ shinyUI(
                     ),
                     tabPanel("Crisis", 
                              br(),
-                             plotlyOutput("plot_crisis"),
+                             # plotlyOutput("plot_crisis"),
+                             uiOutput("plot_crisis"),
                              br(),
                              br(),
                              br(),

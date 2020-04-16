@@ -1,4 +1,4 @@
-plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, interactive = TRUE) {
+plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, highcharter = TRUE) {
   require(tidyverse)
   require(glue)
   
@@ -19,11 +19,11 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   )) %>%
     mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
 
+  # plotly
   p = d_processed %>%
     ggplot(
       aes(
         x = Date,
-        # y = `Projected Number of Staff`,
         y = `Staff Needed`,
         group = Role,
       )
@@ -49,8 +49,25 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       title = element_text(size = 10)
     )
   
-  if (interactive)  
-    plotly::ggplotly(p, height = 450, width = 800)
+  
+  # highcharter
+  high_chart_p = hchart(
+    d_processed %>%
+      filter(`Team type` == "Total"),
+    type = 'line',
+    hcaes(y = `Staff Needed`, group = Role, x = Date)
+  ) %>%
+    hc_title(text = "Total Staffing Needs (ICU and Non-ICU)",
+             margin = 20, align = "left") %>% 
+    hc_chart(backgroundColor = "white") %>% 
+    hc_legend(align = "right", verticalAlign = "top",
+              layout = "vertical", x = 0, y = 100)
+  
+  
+  
+  if (highcharter) 
+    high_chart_p
   else
-    p
+    plotly::ggplotly(p, height = 450, width = 800)
+  
 }

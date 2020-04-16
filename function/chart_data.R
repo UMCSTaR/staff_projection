@@ -1,9 +1,6 @@
 chart_data <- function(chime, ratio_table, capacity,
-                       # total_bed = 800,
                        total_bed,
-                       # icu_perc = 50/100,
                        icu_perc,
-                       # capacity_perc = 81/100,
                        capacity_perc,
                        advanced = TRUE) {
   
