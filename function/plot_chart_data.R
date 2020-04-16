@@ -8,9 +8,18 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     rename_all(stringr::str_to_title) %>% 
     rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>% 
     rename('Projected Number of Staff' = `Projected bed per person`,
-           'Staff Needed'= !!staff_needs)
+           'Staff Needed'= !!staff_needs) %>%
+    select(Date, `Team type`, Role, `Staff Needed`, `Total employees at full capacity`)
   
-  p = d_processed %>%  
+  d_processed <- as.data.frame(rbind(d_processed,
+    d_processed %>% group_by(Date, Role) %>% 
+      summarize(`Staff Needed` = sum(`Staff Needed`),
+                `Total employees at full capacity` = unique(`Total employees at full capacity`)) %>%
+      mutate(`Team type` = 'Total') %>% ungroup()
+  )) %>%
+    mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
+
+  p = d_processed %>%
     ggplot(
       aes(
         x = Date,
@@ -28,14 +37,13 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       # linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
-    # geom_hline(
-    #   # aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
-    #   # size = 0.5, alpha = 0.8, show.legend = FALSE
-    #   aes(yintercept = `Total employees at full capacity`, col = Role),
-    #   size = 0.3, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
-    # ) +
+    geom_hline(
+      data = subset(d_processed, `Team type` == "Total"),
+      aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
+      size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
+    ) +
     scico::scale_color_scico_d() + # change if needed
-    facet_wrap(~ `Team type`, scales = "free", nrow = 2) +
+    facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)

@@ -54,8 +54,6 @@ chart_data <- function(chime, ratio_table, capacity,
       n_staff_non_covid_day = n_staff_non_covid * (24 / shift_length_hr),
       n_staff_non_covid_week = n_staff_non_covid_day * 7 / shift_per_week,
     ) 
-
-  
   
   if (advanced)
     all_cov_and_non_cov
