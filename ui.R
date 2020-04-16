@@ -40,7 +40,7 @@ shinyUI(
                          br(),
                          
                          useShinyjs(),
-                         shinyWidgets::materialSwitch(inputId="advanced_census_input", label = "Advanced", value = FALSE, status = "success"),
+                         shinyWidgets::materialSwitch(inputId="advanced_census_input", label = strong("Advanced"), value = FALSE, status = "success"),
                          helpText(id = "advanced_input_help" ,"Estimate staffing for COVID and non-COVID patients"),
                          
                          numericInput(
@@ -96,8 +96,8 @@ shinyUI(
                          br(),
                          br(),
                          useShinyjs(),
-                         shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = "Show ICU and Non-ICU plots", value = FALSE, status = "success"),
-                         
+                         shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = strong("Show ICU and Non-ICU plots"), value = FALSE, status = "success"),
+
                          
                          hr(),
                          
@@ -124,18 +124,19 @@ shinyUI(
                     # tabPanel("test", tableOutput("test")),
 
                     # plots ------
-                    tabPanel("Normal", 
-                             br(),
-                             # plotlyOutput("plot_norm"),
-                             uiOutput("plot_norm"),
-                             br(),
-                             br(),
-                             br(),
-                             div(tableOutput("table_result_normal"), style = "font-size:120%")
-                    ),
+                    tabPanel(
+                        "Normal",
+                        br(),
+                        
+                        column(width = 10,
+                               uiOutput("plot_norm")),
+                        br(),
+                        br(),
+                        br(),
+                        div(tableOutput("table_result_normal"), style = "font-size:120%")
+                    ), 
                     tabPanel("Crisis", 
                              br(),
-                             # plotlyOutput("plot_crisis"),
                              uiOutput("plot_crisis"),
                              br(),
                              br(),

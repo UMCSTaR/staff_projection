@@ -42,7 +42,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
       size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
     ) +
-    scico::scale_color_scico_d() + # change if needed
+    scico::scale_color_scico_d(palette = "batlow") + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
     theme_minimal() +
     theme(
@@ -51,17 +51,30 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   
   
   # highcharter
+  cols <- scico::scico(palette = "batlow", n = 10)
+  cols <- substr(cols, 0, 7)
+  
   high_chart_p = hchart(
     d_processed %>%
       filter(`Team type` == "Total"),
     type = 'line',
-    hcaes(y = `Staff Needed`, group = Role, x = Date)
+    hcaes(y = `Staff Needed`, group = Role, x = Date),
   ) %>%
     hc_title(text = "Total Staffing Needs (ICU and Non-ICU)",
              margin = 20, align = "left") %>% 
+    hc_subtitle(text = "Hover over the plot below to see your staffing needs in details",
+             margin = 20, align = "left") %>% 
     hc_chart(backgroundColor = "white") %>% 
-    hc_legend(align = "right", verticalAlign = "top",
-              layout = "vertical", x = 0, y = 100)
+    # hc_legend(align = "right", verticalAlign = "top",
+    #           layout = "vertical", x = 0, y = 100) %>% 
+    hc_add_theme(hc_theme_smpl()) %>% 
+    hc_xAxis(title = "") %>% 
+    hc_yAxis(title = "") %>% 
+    hc_legend(enabled = F) %>% 
+    hc_colors(cols) %>% 
+    hc_tooltip(table = TRUE, sort = TRUE)  %>%
+    hc_exporting(enabled = TRUE) # enable exporting option
+  
   
   
   
