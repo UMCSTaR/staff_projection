@@ -31,6 +31,7 @@ shinyUI(
                          actionButton(
                            "prejected_cesus",
                            label = "Input Projected Census Data",
+                           width = "240px",
                            icon("database"),
                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
@@ -67,6 +68,7 @@ shinyUI(
                          
                          actionButton("update_gen", "Edit Staffing Ratios",
                                       icon("user-md"),
+                                      width = "240px",
                                       style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                          
                          br(),
@@ -74,6 +76,7 @@ shinyUI(
                          
                          actionButton("update_capacity", "Enter Your Total Employees",
                                       icon("clipboard-list"),
+                                      width = "240px",
                                       style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
                          
                          
@@ -86,6 +89,7 @@ shinyUI(
                          actionButton(
                            "generateButton",
                            label = "Generate Plot",
+                           width = "240px",
                            icon("chart-line"),
                            style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
                          ),
