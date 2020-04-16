@@ -1,4 +1,6 @@
-plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, highchart = TRUE) {
+plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,
+                            mode = 'Normal', digits = 1, highchart = TRUE){
+                            # team_type = 'General') {
   require(tidyverse)
   require(glue)
   
@@ -10,12 +12,33 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     rename('Projected Number of Staff' = `Projected bed per person`,
            'Staff Needed'= !!staff_needs)
   
-
-  high_chart_p = hchart(d_processed %>% 
-                          filter(`Team type` == "ICU"), type = 'line', hcaes(y = `Staff Needed`, group = Role, x = Date)) %>% 
-    hc_chart(backgroundColor = "white")
+  
+  # highchart
+  high_chart_p = highchart() %>%
+    hc_xAxis(type = "datetime", dateTimeLabelFormats = list(day = '%d of %b')) %>%
+    hc_yAxis_multiples(create_yaxis(naxis = 2, heights = c(1, 1))) %>% 
+    hc_add_series(
+      yAxis = 0,
+    d_processed %>%
+      filter(`Team type` == "General"),
+    type = 'line',
+    hcaes(y = `Staff Needed`, group = Role, x = Date)
+  )  %>% 
+    hc_add_series(
+      yAxis = 1,
+      d_processed %>%
+        filter(`Team type` == "ICU"),
+      type = 'line',
+      hcaes(y = `Staff Needed`, group = Role, x = Date)
+    ) %>%
+    hc_chart(backgroundColor = "white") %>%
+    # hc_colors(scico::scico(10, palette = 'batlow')) %>%
+    hc_title(text = "mytitle",
+             style = list(fontSize = "15px")) 
+    
   
 
+# ggplot
   p = d_processed %>%  
     ggplot(
       aes(
@@ -50,7 +73,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   
   
   if (highchart)
-    high_chart_p
+    high_chart_p 
   else
     plotly::ggplotly(p, height = 450, width = 800)
 }
