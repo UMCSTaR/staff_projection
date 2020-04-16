@@ -10,7 +10,7 @@ chart_data <- function(chime, ratio_table, capacity,
   require(tidyverse)
   
   chime_long = chime %>% 
-    filter(day >= 0) %>% 
+    filter(date >= Sys.Date()) %>% 
     rename(General = hospitalized, ICU = icu) %>%
     pivot_longer(c(ICU, General), names_to = 'team_type', values_to = 'n')
   
