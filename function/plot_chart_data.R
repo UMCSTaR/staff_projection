@@ -42,7 +42,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
       size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
     ) +
-    scico::scale_color_scico_d(palette = "batlow") + # change if needed
+    scale_color_brewer(palette = "Paired") + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
     theme_minimal() +
     theme(
@@ -51,7 +51,8 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   
   
   # highcharter
-  cols <- scico::scico(palette = "batlow", n = 10)
+  # cols <- scico::scico(palette = "hawaii",begin = 0.1, end = 0.8, n = 10)
+  cols <- RColorBrewer::brewer.pal(10, "Paired")
   cols <- substr(cols, 0, 7)
   
   high_chart_p = hchart(
