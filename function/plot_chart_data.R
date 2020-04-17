@@ -45,8 +45,14 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     ) +
     geom_hline(
       data = subset(d_processed, `Team type` == "Total"),
-      aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
-      size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
+      aes(
+        yintercept = `Total employees at full capacity`,
+        col = Role
+      ),
+      size = 0.5,
+      alpha = 0.8,
+      show.legend = FALSE,
+      linetype = "dashed"
     ) +
     scale_color_brewer(palette = "Paired") + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 3, labeller = as_labeller(team_type_name)) +
@@ -90,5 +96,5 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   if (highcharter) 
     high_chart_p
   else
-    plotly::ggplotly(p, height = 450, width = 800)
+    plotly::ggplotly(p, height = 450, width = 800) 
 }
