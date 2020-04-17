@@ -61,9 +61,10 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     hcaes(y = `Staff Needed`, group = Role, x = Date),
   ) %>%
     hc_title(text = "Total Staffing Needs (ICU and Non-ICU)",
-             margin = 20, align = "left") %>% 
-    hc_subtitle(text = "Hover over the plot below to see your staffing needs in details",
-             margin = 20, align = "left") %>% 
+             margin = 20, align = "left", style = list(fontWeight = "bold", fontSize = "1.5em")) %>% 
+    hc_subtitle(text = "Hover over the plot to see your staffing needs in details.
+                Click the dropdown menu to the right for data/plot export.",
+             margin = 20, align = "left", style = list(fontSize = "1em")) %>% 
     hc_chart(backgroundColor = "white") %>% 
     # hc_legend(align = "right", verticalAlign = "top",
     #           layout = "vertical", x = 0, y = 100) %>% 
@@ -72,8 +73,8 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     hc_yAxis(title = "") %>% 
     hc_legend(enabled = F) %>% 
     hc_colors(cols) %>% 
-    hc_tooltip(table = TRUE, sort = TRUE) %>% 
-               # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
+    hc_tooltip(table = TRUE, sort = TRUE, style = list(fontSize = "1em")) %>%
+                 # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
     hc_exporting(enabled = TRUE) # enable exporting option
   
   

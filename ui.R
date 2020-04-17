@@ -47,7 +47,6 @@ shinyUI(
                          sliderInput("capacity_perc",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 91),
                          
                          
-                         
                          # staff ratio
                          hr(),
                          
@@ -90,7 +89,7 @@ shinyUI(
                          
                          h4("Step 4: Download Tables"),
                          
-                         downloadButton("downloadData_combine_file", "Download Combined File (.csv)",
+                         downloadButton("downloadData_combine_file", "Download Combined File",
                                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4")
             ),
             
