@@ -8,32 +8,27 @@ library(readxl)
 
 # read data -------
 chime <- read_csv("./data/2020-04-08_projected_census.csv")
-
-team <- read_xlsx("./data/staff_table.xlsx") 
-capacity <- read_xlsx("./data/staffing_normal2020-04-08_other_additional input.xlsx", skip = 1) %>%
-    filter(!is.na(Role)) %>% select(-1) %>%
-    select_if(function(x) !(all(is.na(x)) | all(x==""))) %>%
-    rename_all(function(x) tolower(str_replace_all(x, " ", "_")))
-
-
-# read team ratio 
-team_ratio = readxl::read_xlsx("./data/team_ratio_shift.xlsx") %>% 
+team <- read_xlsx("./data/staff_table.xlsx", sheet = "updated_4_16")  %>% 
     mutate_if(is.numeric, as.integer)   
 
 
-capacity_def = capacity %>% 
+
+# read team ratio 
+
+capacity_def = team %>% 
     select("role", "total_employees_at_full_capacity") %>%
-    mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity))
+    mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>% 
+    distinct() 
     
                
 # ICU 
-team_icu = team_ratio %>%
+team_icu = team %>%
     filter(team_type == "ICU") %>%
     transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
               shift_length_hr, shift_per_week)
 
 # non-icu
-team_gen = team_ratio %>%
+team_gen = team %>%
     filter(team_type == "General") %>%
     transmute(role, ratio = n_bed_per_person, ratio_s = n_bed_per_person_stretch,
               shift_length_hr, shift_per_week)
@@ -68,7 +63,7 @@ shinyServer(
         #     }
         # })
         
-        capacity_table <- reactive(capacity)
+        capacity_table <- reactive(capacity_def)
         
         # ICU
         team_icu_react = reactive({
@@ -517,7 +512,7 @@ shinyServer(
       
     
         # table underneath the plots-------
-        capacity_stats =  capacity %>% 
+        capacity_stats =  capacity_def %>% 
             select(role, total_employees_at_full_capacity)
         
         max_date <- reactive({
