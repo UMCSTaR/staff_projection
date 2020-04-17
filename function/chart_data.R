@@ -1,3 +1,12 @@
+team <- read_xlsx("./data/staff_table.xlsx", sheet = "updated_4_16")  %>% 
+  mutate_if(is.numeric, as.integer)   
+
+capacity_def = team %>% 
+  select("role", "total_employees_at_full_capacity") %>%
+  mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>% 
+  distinct() 
+
+
 chart_data <- function(chime, ratio_table, capacity,
                        total_bed,
                        icu_perc,
@@ -20,7 +29,7 @@ chart_data <- function(chime, ratio_table, capacity,
     mutate(crisis_mode = if_else(str_detect(crisis_mode, 'crisis'),'Crisis','Normal'))
 
   
-  all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity, by = c("role"))
+  all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity_def, by = c("role"))
 
   all_cov = all %>% 
     mutate(projected_bed_per_person = n / n_bed_per_person,
