@@ -119,7 +119,7 @@ shinyServer(
                 chime_table() %>% 
                     filter(date >= Sys.Date()) %>% 
                     mutate(day = as.integer(row_number()-1)),
-                rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
+                rowHeaders = FALSE, width = 470, stretchH = "all", height = 300, highlightRow = TRUE)
             
         })
         
@@ -133,7 +133,8 @@ shinyServer(
                              rowHeaders = FALSE,
                              width = 470,
                              stretchH = "all",
-                             height = 300
+                             height = 300,
+                             highlightRow = TRUE
                          )
                          
                      }))
@@ -151,7 +152,7 @@ shinyServer(
                                         day = as.integer(day),
                                         hospitalized = as.integer(hospitalized),
                                         icu = as.integer(icu)),
-                             rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
+                             rowHeaders = FALSE, width = 470, stretchH = "all", height = 300,  highlightRow = TRUE)
                      })
         )
         
@@ -193,7 +194,8 @@ shinyServer(
                         mutate_if(is.numeric, as.integer),
                     rowHeaders = FALSE,
                     width = 650,
-                    stretchH = "all"
+                    stretchH = "all",
+                    highlightRow = TRUE
                 ) %>%
                     hot_cols(colWidths = 100)
             })
@@ -208,7 +210,7 @@ shinyServer(
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all",highlightRow = TRUE
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -224,7 +226,7 @@ shinyServer(
                             "Total employees (Max)" = total_employees_at_full_capacity,
                             Role = role
                         ),
-                    rowHeaders = FALSE, width = 570, stretchH = "all"
+                    rowHeaders = FALSE, width = 570, stretchH = "all",highlightRow = TRUE
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -242,7 +244,7 @@ shinyServer(
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all",highlightRow = TRUE
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -257,7 +259,7 @@ shinyServer(
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
-                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                        mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all",highlightRow = TRUE
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -271,7 +273,7 @@ shinyServer(
                         rename(
                             "Total employees (Max)" = total_employees_at_full_capacity,
                             Role = role
-                        ), rowHeaders = FALSE, width = 570, stretchH = "all"
+                        ), rowHeaders = FALSE, width = 570, stretchH = "all", highlightRow = TRUE
                 ) %>% 
                     hot_cols(colWidths = 100) 
             })
@@ -288,7 +290,7 @@ shinyServer(
                         "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
                     ) %>%
-                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all", highlightRow = TRUE
             ) %>% 
                 hot_cols(colWidths = 100) 
             
@@ -304,7 +306,7 @@ shinyServer(
                         "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
                     ) %>%
-                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all"
+                    mutate_if(is.numeric, as.integer), rowHeaders = FALSE, width = 650, stretchH = "all", highlightRow = TRUE
             ) %>% 
                 hot_cols(colWidths = 100) 
             
@@ -317,7 +319,7 @@ shinyServer(
                     rename(
                         "Total employees (Max)" = total_employees_at_full_capacity,
                         Role = role
-                    ), rowHeaders = FALSE, width = 570, stretchH = "all"
+                    ), rowHeaders = FALSE, width = 570, stretchH = "all", highlightRow = TRUE
             ) %>% 
                 hot_cols(colWidths = 100) 
             

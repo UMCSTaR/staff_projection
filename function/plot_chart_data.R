@@ -20,12 +20,19 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
 
   # plotly
+  team_type_name <- c(
+    `Total` = "Total",
+    `ICU` = "ICU",
+    `General` = " Non-ICU"
+  )
+  
+
   p = d_processed %>%
     ggplot(
       aes(
         x = Date,
-        y = `Staff Needed`,
-        group = Role,
+        y = `Staff Needed`
+        # group = Role,
       )
     ) +
     geom_line(aes(col = Role), show.legend = FALSE) +
@@ -33,8 +40,8 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       title   = paste("Projected Staffing Needs:", mode),
       x       = "",
       y       = "",
-      colour  = "Roles",
-      caption = "Estimates from CHIME and user-inputted ratios"
+      colour  = "Roles"
+      # caption = "Estimates from CHIME and user-inputted ratios"
     ) +
     geom_hline(
       data = subset(d_processed, `Team type` == "Total"),
@@ -42,7 +49,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
     ) +
     scale_color_brewer(palette = "Paired") + # change if needed
-    facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
+    facet_wrap(~ `Team type`, scales = "free", nrow = 3, labeller = as_labeller(team_type_name)) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)
@@ -84,5 +91,4 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     high_chart_p
   else
     plotly::ggplotly(p, height = 450, width = 800)
-  
 }

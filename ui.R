@@ -90,6 +90,7 @@ shinyUI(
                          h4("Step 4: Download Tables"),
                          
                          downloadButton("downloadData_combine_file", "Download Combined File",
+                                        width = "240px",
                                         style = "color: #fff; background-color: #228B22; border-color: #2e6da4")
             ),
             
@@ -135,8 +136,7 @@ shinyUI(
                                 ")"
                               ),
                              
-                             # helpText(a("Click Here to Download Survey",  href= "https://penn-chime.phl.io/")),
-                             
+
                              fileInput(
                                "chime_up",
                                "Click browse to select file (.csv)",
