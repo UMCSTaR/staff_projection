@@ -48,7 +48,7 @@ shinyServer(
         # Team ratio ---
         team_table <- reactive({
             if (is.null(input$team_in)) {
-                team_ratio
+                team
             } else {
                 read_xlsx(input$team_in$datapath)
             }

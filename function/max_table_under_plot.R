@@ -15,5 +15,6 @@ max_table_under_plot <- function(data, mode = "Normal", total_staff_value = quo(
     mutate(all = as.integer(all)) %>%
     transmute(Role = role, `Max Needed (ICU and Non-ICU)` = all,
               "Total Employees" = total_employees_at_full_capacity,
-              day)
+              day) %>% 
+    arrange(desc(`Total Employees`))
 }
