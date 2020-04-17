@@ -1,5 +1,6 @@
 library(shiny)
 library(tidyverse)
+library(highcharter)
 library(rhandsontable)
 library(shinyjs)
 library(plotly)
@@ -405,35 +406,112 @@ shinyServer(
         
         # advanced inputs cal---------
         
-        # output$test <- renderTable(display_table() %>% 
-        #                                select(n_staff_non_covid_week, non_cov_pt, everything()) %>% 
+        # output$test <- renderTable(display_table() %>%
+        #                                select(n_staff_non_covid_week, non_cov_pt, everything()) %>%
         #                                filter(n_staff_non_covid_week<0))
-        # 
+
         
         
         # plots -------
+
         observeEvent(input$advanced_census_input,{
-            if(input$advanced_census_input == TRUE){
-                # advanced inputs including non covid
-                output$plot_crisis <- renderPlotly({
-                    plot_chart_data(display_table(), mode = "Crisis", staff_needs = quo(`All covd non covid staff`))
+            # advanced inputs including non covid 
+            if(input$advanced_census_input == TRUE) {
+                # crisis
+                output$plot_crisis <- renderUI({
+                    if (input$show_icu_non_icu_plots == TRUE) {
+                        output$crisis_icu_non_icu_adv <- renderPlotly({
+                            plot_chart_data(
+                                display_table(),
+                                mode = "Crisis",
+                                staff_needs = quo(`All covd non covid staff`),
+                                highcharter = F
+                            )
+                        })
+                        plotlyOutput("crisis_icu_non_icu_adv")
+                    }
+                    
+                    else if (input$show_icu_non_icu_plots == FALSE) {
+                        output$crisis_total_adv <- renderHighchart({
+                            plot_chart_data(
+                                display_table(),
+                                mode = "Crisis",
+                                staff_needs = quo(`All covd non covid staff`)
+                            )
+                        })
+                        highchartOutput("crisis_total_adv")
+                    }
                 })
                 
-                output$plot_norm <- renderPlotly({
-                    plot_chart_data(display_table(), mode = "Normal", staff_needs = quo(`All covd non covid staff`))
+                # normal
+                output$plot_norm <- renderUI({
+                    if (input$show_icu_non_icu_plots == TRUE) {
+                        output$norm_icu_non_icu_adv <- renderPlotly({
+                            plot_chart_data(
+                                display_table(),
+                                mode = "Normal",
+                                staff_needs = quo(`All covd non covid staff`),
+                                highcharter = F
+                            )
+                        })
+                        plotlyOutput("norm_icu_non_icu_adv")
+                    }
+                    
+                    else if (input$show_icu_non_icu_plots == FALSE) {
+                        output$norm_total_adv <- renderHighchart({
+                            plot_chart_data(
+                                display_table(),
+                                mode = "Normal",
+                                staff_needs = quo(`All covd non covid staff`)
+                            )
+                        })
+                        highchartOutput("norm_total_adv")
+                    }
+                })
+            } 
+            
+            # no advanced inputs
+            else if (input$advanced_census_input == FALSE) {
+                # crisis
+                output$plot_crisis <- renderUI({
+                    if (input$show_icu_non_icu_plots == TRUE) {
+                        output$crisis_icu_non_icu <- renderPlotly({
+                            plot_chart_data(display_table(),
+                                            mode = "Crisis",
+                                            highcharter = FALSE)
+                        })
+                        plotlyOutput("crisis_icu_non_icu")
+                    }
+                    
+                    else if (input$show_icu_non_icu_plots == FALSE) {
+                        output$crisis_total <- renderHighchart({
+                            plot_chart_data(display_table(), mode = "Crisis")
+                        })
+                        highchartOutput("crisis_total")
+                    }
                 })
                 
-            } else {
-                output$plot_crisis <- renderPlotly({
-                    plot_chart_data(display_table(), mode = "Crisis")
+                # normal
+                output$plot_norm <- renderUI({
+                    if (input$show_icu_non_icu_plots == TRUE) {
+                        output$norm_icu_non_icu <- renderPlotly({
+                            plot_chart_data(display_table(),
+                                            mode = "Normal",
+                                            highcharter = FALSE)
+                        })
+                        plotlyOutput("norm_icu_non_icu")
+                    }
+                    
+                    else if (input$show_icu_non_icu_plots == FALSE) {
+                        output$norm_total <- renderHighchart({
+                            plot_chart_data(display_table(), mode = "Normal")
+                        })
+                        highchartOutput("norm_total")
+                    }
                 })
                 
-                output$plot_norm <- renderPlotly({
-                    plot_chart_data(display_table(), mode = "Normal")
-                })
             }
         })
-        
       
     
         # table underneath the plots-------
@@ -449,8 +527,7 @@ shinyServer(
                 pull()
         })
         
-        # here -------------
-        
+
         observeEvent(input$advanced_census_input,{
             if(input$advanced_census_input == TRUE){
                 # advanced inputs including non coivd
@@ -508,10 +585,6 @@ shinyServer(
                 })
             }
         })
-        
-        
-        
-       
         
         
         
