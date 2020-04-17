@@ -126,21 +126,24 @@ shinyUI(
                     # plots ------
                     tabPanel(
                         "Normal",
-                        br(),
-                        
                         column(width = 10,
                                uiOutput("plot_norm")),
                         br(),
                         br(),
                         br(),
+                        br(),
+                        
+                        
                         div(tableOutput("table_result_normal"), style = "font-size:120%")
                     ), 
                     tabPanel("Crisis", 
+                             column(width = 10,
+                                    uiOutput("plot_crisis")),
                              br(),
-                             uiOutput("plot_crisis"),
                              br(),
                              br(),
                              br(),
+                            
                              div(tableOutput("table_result_crisis"), style = "font-size:120%")
                     ),
                     

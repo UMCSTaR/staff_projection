@@ -423,7 +423,8 @@ shinyServer(
                             plot_chart_data(
                                 display_table(),
                                 mode = "Crisis",
-                                staff_needs = quo(`All covd non covid staff`)
+                                staff_needs = quo(`All covd non covid staff`),
+                                highcharter = F
                             )
                         })
                         plotlyOutput("crisis_icu_non_icu_adv")
@@ -448,7 +449,8 @@ shinyServer(
                             plot_chart_data(
                                 display_table(),
                                 mode = "Normal",
-                                staff_needs = quo(`All covd non covid staff`)
+                                staff_needs = quo(`All covd non covid staff`),
+                                highcharter = F
                             )
                         })
                         plotlyOutput("norm_icu_non_icu_adv")
