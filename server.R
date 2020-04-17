@@ -1,5 +1,6 @@
 library(shiny)
 library(tidyverse)
+library(highcharter)
 library(rhandsontable)
 library(shinyjs)
 library(plotly)
