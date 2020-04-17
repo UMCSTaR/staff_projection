@@ -117,8 +117,8 @@ shinyServer(
         output$prejected_census <- renderRHandsontable({
             rhandsontable(
                 chime_table() %>% 
-                    filter(day>=0) %>% 
-                    mutate(day = as.integer(day)),
+                    filter(date >= Sys.Date()) %>% 
+                    mutate(day = as.integer(row_number()-1)),
                 rowHeaders = FALSE, width = 470, stretchH = "all", height = 300)
             
         })
@@ -128,8 +128,8 @@ shinyServer(
                      output$prejected_census <- renderRHandsontable({
                          rhandsontable(
                              chime_table() %>%
-                                 filter(day >= 0) %>%
-                                 mutate(day = as.integer(day)),
+                                 filter(date >= Sys.Date()) %>% 
+                                 mutate(day = as.integer(row_number()-1)),
                              rowHeaders = FALSE,
                              width = 470,
                              stretchH = "all",
@@ -139,15 +139,15 @@ shinyServer(
                      }))
         
         
-        # reset Chime table
+        # reset Chime table -----
         observeEvent(input$reset_census,
                      output$prejected_census <- renderRHandsontable({
                          rhandsontable(
-                             tibble(day = c(1:5),
-                                    date = NA,
+                             tibble(day = c(0:4),
+                                    date = c(Sys.Date():Sys.Date()+4),
                                     hospitalized = 0,
                                     icu = 0) %>% 
-                                 mutate(date = lubridate::as_date(day, origin = "2020-03-22"),
+                                 mutate(date = lubridate::as_date(day, origin = Sys.Date()),
                                         day = as.integer(day),
                                         hospitalized = as.integer(hospitalized),
                                         icu = as.integer(icu)),
