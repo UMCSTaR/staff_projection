@@ -1,4 +1,4 @@
-plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, interactive = TRUE) {
+plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, highcharter = TRUE) {
   require(tidyverse)
   require(glue)
   
@@ -19,11 +19,11 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   )) %>%
     mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
 
+  # plotly
   p = d_processed %>%
     ggplot(
       aes(
         x = Date,
-        # y = `Projected Number of Staff`,
         y = `Staff Needed`,
         group = Role,
       )
@@ -42,15 +42,48 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       aes(yintercept = `Total employees at full capacity`, linetype = Role, col = Role),
       size = 0.5, alpha = 0.8, show.legend = FALSE, linetype = "dashed"
     ) +
-    scico::scale_color_scico_d() + # change if needed
+    scale_color_brewer(palette = "Paired") + # change if needed
     facet_wrap(~ `Team type`, scales = "free", nrow = 3) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)
     )
   
-  if (interactive)  
-    plotly::ggplotly(p, height = 450, width = 800)
+  
+  # highcharter
+  # cols <- scico::scico(palette = "hawaii",begin = 0.1, end = 0.8, n = 10)
+  cols <- RColorBrewer::brewer.pal(10, "Paired")
+  cols <- substr(cols, 0, 7)
+  
+  high_chart_p = hchart(
+    d_processed %>%
+      filter(`Team type` == "Total"),
+    type = 'line',
+    hcaes(y = `Staff Needed`, group = Role, x = Date),
+  ) %>%
+    hc_title(text = "Total Staffing Needs (ICU and Non-ICU)",
+             margin = 20, align = "left") %>% 
+    hc_subtitle(text = "Hover over the plot below to see your staffing needs in details",
+             margin = 20, align = "left") %>% 
+    hc_chart(backgroundColor = "white") %>% 
+    # hc_legend(align = "right", verticalAlign = "top",
+    #           layout = "vertical", x = 0, y = 100) %>% 
+    hc_add_theme(hc_theme_smpl()) %>% 
+    hc_xAxis(title = "") %>% 
+    hc_yAxis(title = "") %>% 
+    hc_legend(enabled = F) %>% 
+    hc_colors(cols) %>% 
+    hc_tooltip(table = TRUE, sort = TRUE,
+               # positioner = JS("function () { return { x: this.chart.plotLeft + 15, y: 10}; }"))  %>%
+               positioner = JS("function () { return { x: 460, y: 45 }; }"))  %>%
+    hc_exporting(enabled = TRUE) # enable exporting option
+  
+  
+  
+  
+  if (highcharter) 
+    high_chart_p
   else
-    p
+    plotly::ggplotly(p, height = 450, width = 800)
+  
 }
