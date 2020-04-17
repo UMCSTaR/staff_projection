@@ -8,20 +8,6 @@ library(plotly)
 # Define UI for application that draws a histogram
 shinyUI(
     fluidPage(
-        # titlePanel("Projected Staffing Demand"),
-        # ("This application is intended to work with a"),
-        # strong("projected census"),
-        # ("file from CHIME (e.g. 2020-04-02_projected_census.csv)"),
-        # ("along with a"),
-        # strong("staffing tables"),
-        # (
-        #     "file (e.g., Staffing_role_and_ratio2020-04-02.xlsx) template or your edited staffing ratios."
-        # ),
-        # em(
-        #     "The tools at the top-right of the figure can help you navigate the resulting graph."
-        # ),
-        
-        # hr(),
         
         # sidebar -------
         sidebarLayout(
@@ -127,24 +113,15 @@ shinyUI(
                     # plots ------
                     tabPanel(
                         "Normal",
-                        column(width = 10,
-                               uiOutput("plot_norm")),
-                        br(),
-                        br(),
-                        br(),
-                        br(),
-                        
+                        column(width = 10, 
+                               div(uiOutput("plot_norm"), style = "height:450px")),
                         
                         div(tableOutput("table_result_normal"), style = "font-size:120%")
                     ), 
                     tabPanel("Crisis", 
                              column(width = 10,
-                                    uiOutput("plot_crisis")),
-                             br(),
-                             br(),
-                             br(),
-                             br(),
-                            
+                                    div(uiOutput("plot_crisis"), style = "height:450px")),
+                             
                              div(tableOutput("table_result_crisis"), style = "font-size:120%")
                     ),
                     

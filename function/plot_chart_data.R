@@ -34,7 +34,6 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       x       = "",
       y       = "",
       colour  = "Roles",
-      # linetype = "Capacity",
       caption = "Estimates from CHIME and user-inputted ratios"
     ) +
     geom_hline(
@@ -73,9 +72,8 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     hc_yAxis(title = "") %>% 
     hc_legend(enabled = F) %>% 
     hc_colors(cols) %>% 
-    hc_tooltip(table = TRUE, sort = TRUE,
-               # positioner = JS("function () { return { x: this.chart.plotLeft + 15, y: 10}; }"))  %>%
-               positioner = JS("function () { return { x: 460, y: 45 }; }"))  %>%
+    hc_tooltip(table = TRUE, sort = TRUE) %>% 
+               # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
     hc_exporting(enabled = TRUE) # enable exporting option
   
   
