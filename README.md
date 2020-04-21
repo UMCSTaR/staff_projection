@@ -1,3 +1,5 @@
+[![COVID Staffing Project](https://koroid.com/wp-content/uploads/2020/04/logo-covid-staffing-project-@2x.png)](https://www.covidstaffing.org)
+
 # Staff Skill Projection
 
 The COVID staffing projection tool can be used to calculate your hospital’s staffing needs over time, based on your projected patient census. Please visit [covidstaffing.org](https://www.covidstaffing.org/) for more information on our staffing tools.
