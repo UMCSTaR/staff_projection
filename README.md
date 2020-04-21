@@ -12,7 +12,7 @@ This application is written in [R](https://www.r-project.org/) and uses [Shiny](
 
 ### Settings up the development environment
 
-This should detail how to setup a local environment that enables developers to keep all packages version segregated from their main machine. This will make it easy to setup and avoid conflicts due in dependencies due to version miss-matches between development environments.   
+This should detail how to setup a local environment that enables developers to keep all packages version segregated from their local machine. This will make it easy to setup and avoid conflicts due to dependency version miss-matches between development environments.   
 
 ### Running
 
