@@ -83,6 +83,8 @@ ShinyApp searches for the following in the root folder:
     - Contains shinyServer function
 - ui.R
     - Contains shinyUI function
+- styles.css
+    - Used for global CSS styling 
 - debug.R
     - What is this for?
 - staff_projection.Rproj
