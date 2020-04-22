@@ -9,6 +9,7 @@
     width: '100%';
 }
 
+/* Margins */
 .margin-top20 {
     margin-top: 20px;
 }
@@ -25,14 +26,16 @@
     margin-bottom: 10px;
 }
 
-.plot {
-    height: 480px;
-}
-
+/* Font */
 .font-size {
     font-size: 120%;
 }
 
 .font-size13 {
     font-size: 13px;
+}
+
+/* Tables & Graphs */
+.plot {
+    height: 480px;
 }
