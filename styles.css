@@ -1,0 +1,14 @@
+/* Global Styles */
+
+/* Buttons */
+.main-button {
+    color: #fff;
+    background-color: #228B22;
+    border-color: #2e6da4;
+    align-self: 'center';
+    width: '100%';
+}
+
+.button-margin {
+    margin-bottom: 20px;
+}

@@ -8,9 +8,10 @@ library(plotly)
 # Define UI for application that draws a histogram
 shinyUI(
     fluidPage(
+        includeCSS("styles.css"),
         # Start - Sidebar
         sidebarLayout(
-            sidebarPanel(width = 3,
+            sidebarPanel(width = 4,
                  # step1 - Census
                  h4("Step 1: Input Projected Census"),
 
@@ -19,7 +20,7 @@ shinyUI(
                    label = "Input Projected Census",
                    width = "100%",
                    icon("database"),
-                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                   class = "main-button button-margin"
                  ),
 
                  # step1 - Advanced Section
@@ -54,7 +55,7 @@ shinyUI(
                      "Edit Staffing Ratios",
                      icon("user-md"),
                      width = "100%",
-                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                     class = "main-button button-margin"
                  ),
 
                  actionButton(
@@ -62,7 +63,7 @@ shinyUI(
                      "Enter Total Employees",
                      icon("clipboard-list"),
                      width = "100%",
-                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                     class = "main-button button-margin"
                  ),
 
                  hr(),
@@ -75,7 +76,7 @@ shinyUI(
                    label = "Generate Plot",
                    width = "100%",
                    icon("chart-line"),
-                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                   class = "main-button button-margin"
                  ),
 
                  useShinyjs(),
@@ -89,8 +90,8 @@ shinyUI(
                  downloadButton(
                      "downloadData_combine_file",
                      "Download Combined File",
-                     # class = NULL ----- width = "100%", downloadButton needs a class to handle width
-                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
+                     class = "main-button",
+                     style = "width: 100%;"
                  )
             ),
             # End sidebar
@@ -155,13 +156,10 @@ shinyUI(
                                style = "font-size:13px"),
                              
                              actionButton("reset_census", "Clear Table", icon("table"),
-                                          style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                                          class = "main-button button-margin"),
                              
                              actionButton("default_chime", "Reset to Default", icon("undo"),
-                                          style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                             
-                             br(),
-                             br(),
+                                          class = "main-button button-margin"),
                              
                              rHandsontableOutput("prejected_census"),
                              
@@ -212,9 +210,9 @@ shinyUI(
                      ),
                      
                       actionButton("reset", "Clear Table", icon("table"),
-                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                                   class = "main-button"),
                       actionButton("reset_to_ori", "Reset to Default", icon("undo"),
-                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                                   class = "main-button"),
                       
                       h4("ICU"),
                       
@@ -238,7 +236,7 @@ shinyUI(
                       # 
                       
                       downloadButton("downloadData_all_ratio", "Download Staffing Ratios Tables",
-                                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                                     class = "main-button"),
                       
                       
                       column(
@@ -274,12 +272,9 @@ shinyUI(
                       ),
 
                       actionButton("clear_capacity", "Clear Table", icon("table"),
-                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
+                                   class = "main-button button-margin"),
                       actionButton("reset_default_capacity", "Reset to Default", icon("undo"),
-                                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                      
-                      br(),
-                      br(),
+                                   class = "main-button button-margin"),
                       
                       div(rHandsontableOutput("x3"), style = "font-size: 120%"),
                     )
