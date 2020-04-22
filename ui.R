@@ -8,93 +8,94 @@ library(plotly)
 # Define UI for application that draws a histogram
 shinyUI(
     fluidPage(
-        
-        # sidebar -------
+        # Start - Sidebar
         sidebarLayout(
             sidebarPanel(width = 3,
-                         # step1---------
-                         h4("Step 1: Input Projected Census"),
-                         
-                         actionButton(
-                           "prejected_cesus",
-                           label = "Input Projected Census Data",
-                           width = "240px",
-                           icon("database"),
-                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
-                         ),
-                         
-                         br(),
-                         br(),
-                         
-                         useShinyjs(),
-                         shinyWidgets::materialSwitch(inputId="advanced_census_input", label = strong("Advanced"), value = FALSE, status = "success"),
-                         helpText(id = "advanced_input_help" ,"Estimate staffing for COVID and non-COVID patients"),
-                         
-                         numericInput(
-                             "total_bed",
-                             "Total number of beds",
-                             1000,
-                             min = 0,
-                             max = 1000,
-                             step = 10,
-                             width = "70%"
-                         ),
-                         
-                         shinyWidgets::setSliderColor("#404040", c(3)),
-                         
-                         sliderInput("icu_perc", label="Proportion of all beds allocated to ICU", min = 0, max = 100, post  = " %", value = 30),
-                         
-                         sliderInput("capacity_perc",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 91),
-                         
-                         
-                         # staff ratio
-                         hr(),
-                         
-                         h4("Step 2: Edit Staffing Ratios"),
-                         
-                         actionButton("update_gen", "Edit Staffing Ratios",
-                                      icon("user-md"),
-                                      width = "240px",
-                                      style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                         
-                         br(),
-                         br(),
-                         
-                         actionButton("update_capacity", "Enter Your Total Employees",
-                                      icon("clipboard-list"),
-                                      width = "240px",
-                                      style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                         
-                         
-                         br(),
+                 # step1 - Census
+                 h4("Step 1: Input Projected Census"),
 
-                         
-                         hr(),
-                         h4("Step 3: Generate Plots"),
-                      
-                         actionButton(
-                           "generateButton",
-                           label = "Generate Plot",
-                           width = "240px",
-                           icon("chart-line"),
-                           style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
-                         ),
-                         br(),
-                         br(),
-                         useShinyjs(),
-                         shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = strong("Show ICU and Non-ICU plots"), value = FALSE, status = "success"),
+                 actionButton(
+                   "prejected_cesus",
+                   label = "Input Projected Census",
+                   width = "100%",
+                   icon("database"),
+                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                 ),
 
-                         
-                         hr(),
-                         
-                         h4("Step 4: Download Tables"),
-                         
-                         downloadButton("downloadData_combine_file", "Download Combined File",
-                                        width = "240px",
-                                        style = "color: #fff; background-color: #228B22; border-color: #2e6da4")
+                 # step1 - Advanced Section
+                 useShinyjs(),
+                 shinyWidgets::materialSwitch(inputId="advanced_census_input", label = strong("Advanced"), value = FALSE, status = "success"),
+
+                 helpText(id = "advanced_input_help" ,"Estimate staffing for COVID and non-COVID patients"),
+
+                 numericInput(
+                     "total_bed",
+                     "Total number of beds",
+                     1000,
+                     min = 0,
+                     max = 1000,
+                     step = 10,
+                     width = "70%"
+                 ),
+
+                 shinyWidgets::setSliderColor("#404040", c(3)),
+
+                 sliderInput("icu_perc", label="Proportion of all beds allocated to ICU", min = 0, max = 100, post  = " %", value = 30),
+
+                 sliderInput("capacity_perc",label="Bed Occupancy", min = 0, max = 100, post  = " %", value = 91),
+
+                 hr(),
+
+                 # step2 - Staff ratio
+                 h4("Step 2: Edit Staffing Ratios"),
+
+                 actionButton(
+                     "update_gen",
+                     "Edit Staffing Ratios",
+                     icon("user-md"),
+                     width = "100%",
+                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                 ),
+
+                 actionButton(
+                     "update_capacity",
+                     "Enter Total Employees",
+                     icon("clipboard-list"),
+                     width = "100%",
+                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                 ),
+
+                 hr(),
+
+                 # step3 - Plots
+                 h4("Step 3: Generate Plots"),
+
+                 actionButton(
+                   "generateButton",
+                   label = "Generate Plot",
+                   width = "100%",
+                   icon("chart-line"),
+                   style = "color: #fff; background-color: #228B22; border-color: #2e6da4; margin-bottom: 20px"
+                 ),
+
+                 useShinyjs(),
+                 shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = strong("Show ICU and Non-ICU plots"), value = FALSE, status = "success"),
+
+                 hr(),
+
+                 # step4 - Download
+                 h4("Step 4: Download Tables"),
+
+                 downloadButton(
+                     "downloadData_combine_file",
+                     "Download Combined File",
+                     # class = NULL ----- width = "100%", downloadButton needs a class to handle width
+                     style = "color: #fff; background-color: #228B22; border-color: #2e6da4"
+                 )
             ),
-            
-            # mainPanel --------
+            # End sidebar
+
+            # Start mainPanel --------
             mainPanel(
                 
                 h3("Project Your Staffing Needs"),
