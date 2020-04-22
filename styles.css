@@ -5,10 +5,34 @@
     color: #fff;
     background-color: #228B22;
     border-color: #2e6da4;
-    align-self: 'center';
+    align-self: center;
     width: '100%';
 }
 
-.button-margin {
+.margin-top20 {
+    margin-top: 20px;
+}
+
+.margin-top10 {
+    margin-top: 10px;
+}
+
+.margin-bottom20 {
     margin-bottom: 20px;
+}
+
+.margin-bottom10 {
+    margin-bottom: 10px;
+}
+
+.plot {
+    height: 480px;
+}
+
+.font-size {
+    font-size: 120%;
+}
+
+.font-size13 {
+    font-size: 13px;
 }

@@ -15,13 +15,13 @@ shinyUI(
                  # step1 - Census
                  h4("Step 1: Input Projected Census"),
 
-                 actionButton(
-                   "prejected_cesus",
-                   label = "Input Projected Census",
-                   width = "100%",
-                   icon("database"),
-                   class = "main-button button-margin"
-                 ),
+                actionButton(
+                    "prejected_cesus",
+                    label = "Input Projected Census",
+                    width = "100%",
+                    icon("database"),
+                    class = "main-button margin-bottom20"
+                ),
 
                  # step1 - Advanced Section
                  useShinyjs(),
@@ -55,7 +55,7 @@ shinyUI(
                      "Edit Staffing Ratios",
                      icon("user-md"),
                      width = "100%",
-                     class = "main-button button-margin"
+                     class = "main-button margin-bottom10"
                  ),
 
                  actionButton(
@@ -63,7 +63,7 @@ shinyUI(
                      "Enter Total Employees",
                      icon("clipboard-list"),
                      width = "100%",
-                     class = "main-button button-margin"
+                     class = "main-button margin-bottom10"
                  ),
 
                  hr(),
@@ -71,13 +71,13 @@ shinyUI(
                  # step3 - Plots
                  h4("Step 3: Generate Plots"),
 
-                 actionButton(
-                   "generateButton",
-                   label = "Generate Plot",
-                   width = "100%",
-                   icon("chart-line"),
-                   class = "main-button button-margin"
-                 ),
+                actionButton(
+                    "generateButton",
+                    label = "Generate Plot",
+                    width = "100%",
+                    icon("chart-line"),
+                    class = "main-button margin-bottom20"
+                ),
 
                  useShinyjs(),
                  shinyWidgets::materialSwitch(inputId="show_icu_non_icu_plots", label = strong("Show ICU and Non-ICU plots"), value = FALSE, status = "success"),
@@ -97,7 +97,7 @@ shinyUI(
             # End sidebar
 
             # Start mainPanel --------
-            mainPanel(
+            mainPanel(width = 8,
 
                 h3("Project Your Staffing Needs"),
 
@@ -115,18 +115,18 @@ shinyUI(
                     # plots ------
                     tabPanel(
                         "Normal",
-                        column(width = 10,
-                               div(uiOutput("plot_norm"), style = "height:450px")),
+                        column(width = 8,
+                               div(uiOutput("plot_norm"), class = "plot")),
 
-                        div(tableOutput("table_result_normal"), style = "font-size:120%")
+                        div(tableOutput("table_result_normal"), class = "font-size")
                     ),
+                    
                     tabPanel("Crisis",
-                             column(width = 10,
-                                    div(uiOutput("plot_crisis"), style = "height:450px")),
+                             column(width = 8,
+                                    div(uiOutput("plot_crisis"), class = "plot")),
 
-                             div(tableOutput("table_result_crisis"), style = "font-size:120%")
+                             div(tableOutput("table_result_crisis"), class = "font-size")
                     ),
-
 
                     # projected census ------
                     tabPanel(value = "census",
@@ -137,7 +137,6 @@ shinyUI(
                                 a("template", href='data/projected_census_template.csv',target="_blank", download = 'projected_census_template.csv'),
                                 ")"
                               ),
-
 
                              fileInput(
                                "chime_up",
@@ -152,25 +151,28 @@ shinyUI(
 
                              h4("Option 2: Input your projected patient census manually"),
 
-                             p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value",
-                               style = "font-size:13px"),
+                             p(strong("Right click"), "in a cell to add and delete row;", "select cell and type the new value.",
+                               class = "font-size13"),
 
-                             actionButton("reset_census", "Clear Table", icon("table"),
-                                          class = "main-button button-margin"),
+                             actionButton(
+                                 "reset_census",
+                                 "Clear Table",
+                                 icon("table"),
+                                 class = "main-button margin-bottom20"
+                             ),
 
-                             actionButton("default_chime", "Reset to Default", icon("undo"),
-                                          class = "main-button button-margin"),
+                             actionButton(
+                                 "default_chime",
+                                 "Reset to Default",
+                                 icon("undo"),
+                                 class = "main-button margin-bottom20"
+                             ),
 
-                             rHandsontableOutput("prejected_census"),
-
-                             br(),
+                             div(rHandsontableOutput("prejected_census"), class = "font-size margin-bottom20"),
 
                              helpText(strong("hospitalized:"), "Number of patients that are hospitalized in", em("Non-ICU"), "units; ", br(),
                                       strong("icu:"), "Number of patients that are in", em("ICU"), "units")
-
-
-
-                    ),
+                     ),
 
                     # editable tables -------
                     tabPanel(
@@ -200,47 +202,43 @@ shinyUI(
 
                       sliderInput("reduction",label="Expected staffing reduction (due to sickness, quarantine restrictions, or other)", min = 0, max = 100, post  = " %", value = 30, width = "600px"),
 
-                     br(),
-
                      p(
                        strong("Right click"),
                        "in a cell to add and delete row;",
                        "select cell and type the new value",
-                       style = "font-size:13px"
+                       class = "font-size13 margin-top20 margin-bottom10"
                      ),
 
-                      actionButton("reset", "Clear Table", icon("table"),
-                                   class = "main-button"),
-                      actionButton("reset_to_ori", "Reset to Default", icon("undo"),
-                                   class = "main-button"),
+                      actionButton(
+                          "reset",
+                          "Clear Table",
+                          icon("table"),
+                          class = "main-button margin-bottom10"
+                      ),
+                     
+                      actionButton(
+                          "reset_to_ori",
+                          "Reset to Default",
+                          icon("undo"),
+                          class = "main-button margin-bottom10"
+                      ),
 
                       h4("ICU"),
 
-                      div(rHandsontableOutput("x1"), style = "font-size: 120%"),
-
-                      br(),
-
-                      # downloadButton("downloadData_icu_ratio", "Download ICU Staffing Ratios",
-                      #                style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                      #
+                      div(rHandsontableOutput("x1"), class = "font-size margin-bottom20"),
 
                       h4("Non-ICU"),
 
-                      div(rHandsontableOutput("x2"), style = "font-size: 120%"),
+                      div(rHandsontableOutput("x2"), class = "font-size margin-bottom20"),
 
-                      br(),
-
-
-                      # downloadButton("downloadData_non_icu_ratio", "Download Non-ICU Staffing Ratios",
-                      #               style = "color: #fff; background-color: #228B22; border-color: #2e6da4"),
-                      #
-
-                      downloadButton("downloadData_all_ratio", "Download Staffing Ratios Tables",
-                                     class = "main-button"),
-
+                      downloadButton(
+                          "downloadData_all_ratio",
+                          "Download Staffing Ratios Tables",
+                          class = "main-button"
+                      ),
 
                       column(
-                        12,
+                        8,
                         br(),
                         helpText(
                           strong("Role: "),
@@ -268,15 +266,15 @@ shinyUI(
                         strong("Right click"),
                         "in a cell to add and delete row;",
                         "select cell and type the new value",
-                        style = "font-size:13px"
+                        class = "font-size13"
                       ),
 
                       actionButton("clear_capacity", "Clear Table", icon("table"),
-                                   class = "main-button button-margin"),
+                                   class = "main-button margin-bottom20"),
                       actionButton("reset_default_capacity", "Reset to Default", icon("undo"),
-                                   class = "main-button button-margin"),
+                                   class = "main-button margin-bottom20"),
 
-                      div(rHandsontableOutput("x3"), style = "font-size: 120%"),
+                      div(rHandsontableOutput("x3"), class = "font-size"),
                     )
                 )
             )
