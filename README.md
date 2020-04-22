@@ -92,7 +92,7 @@ ShinyApp searches for the following in the root folder:
 - data/
     - What is the main idea for this folder?
 - www/
-    - What is the main idea for this folder?
+    - Accessible to the users web browser (for assets).
 - old/
     - What is the main idea for this folder?
 
