@@ -7,7 +7,7 @@ library(tidyverse)
 
 # chime <- readr::read_csv("data/2020-04-02_projected_census.csv")
 chime <- readr::read_csv("data/2020-04-08_projected_census.csv")
-team  <- readxl::read_xlsx("data/staff_table.xlsx") %>% 
+team  <- readxl::read_xlsx("data/staff_table.xlsx") %>%
   mutate(role = if_else(role == 'Pharn', 'Pharm', role))
 
 # R.utils::sourceDirectory('function/')
@@ -22,4 +22,3 @@ chime_lookup = chart_data(chime, team)
 # plot_chart_data(chime_lookup, interactive = F)
 plot_chart_data(chime_lookup, mode = 'Crisis', interactive = T)
 plot_chart_data(chime_lookup, mode = 'Normal', interactive = T)
-
