@@ -9,6 +9,7 @@ library(plotly)
 shinyUI(
     fluidPage(
         includeCSS("styles.css"),
+        titlePanel("Project Your Staffing Needs"),
         # Start - Sidebar
         sidebarLayout(
             sidebarPanel(width = 4,
@@ -99,8 +100,6 @@ shinyUI(
             # Start mainPanel --------
             mainPanel(width = 8,
 
-                h3("Project Your Staffing Needs"),
-
                 tags$style(HTML("
                       .tabbable > .nav > li[class=active]    > a[data-value='Normal'] {background-color: #9dc183; color:black}
                       .tabbable > .nav > li[class=active]    > a[data-value='Crisis'] {background-color: #8D021F; color:white}
@@ -168,9 +167,9 @@ shinyUI(
                                  class = "main-button margin-bottom20"
                              ),
 
-                             div(rHandsontableOutput("prejected_census"), class = "font-size margin-bottom20"),
+                             div(rHandsontableOutput("prejected_census"), class = "font-size margin-bottom10"),
 
-                             helpText(strong("hospitalized:"), "Number of patients that are hospitalized in", em("Non-ICU"), "units; ", br(),
+                             helpText( class = "text-margin margin-top10", strong("hospitalized:"), "Number of patients that are hospitalized in", em("Non-ICU"), "units; ", br(),
                                       strong("icu:"), "Number of patients that are in", em("ICU"), "units")
                      ),
 
@@ -195,7 +194,7 @@ shinyUI(
                       h4("Option 1: Edit Staffing Ratio Table Below"),
 
 
-                      helpText(
+                      helpText( class = "text-margin",
                         strong("Important note:"),
                         "These estimates are designed to give a sense of general staffing needs, but your needs may vary based on local conditions."
                       ),
@@ -237,10 +236,7 @@ shinyUI(
                           class = "main-button"
                       ),
 
-                      column(
-                        8,
-                        br(),
-                        helpText(
+                        helpText( class = "text-margin margin-top10",
                           strong("Role: "),
                            "List of possible staff roles",
                            br(),
@@ -253,8 +249,7 @@ shinyUI(
                            br(),
                            strong("*"), em("Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.")
                         )
-                      )
-                    ),
+                      ),
 
                     # Capacity tab UI code here
                     tabPanel(

@@ -26,6 +26,10 @@
     margin-bottom: 10px;
 }
 
+.text-margin {
+    margin-right: 40px;
+}
+
 /* Font */
 .font-size {
     font-size: 120%;
