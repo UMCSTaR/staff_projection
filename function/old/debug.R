@@ -10,7 +10,7 @@ library(readxl)
 chime <- read_csv("./data/2020-04-02_projected_census.csv")
 team <- read_xlsx("./data/staff_table.xlsx")
 
-# Clean up CHIME 
+# Clean up CHIME
 chime <- chime %>%
   filter(day >= 0)
 
@@ -20,7 +20,7 @@ chime_row <- nrow(chime)
 # Create four plots: ICU / General; Normal / Crisis
 
 icu_ratio <- team %>% 
-  filter(team_type == "ICU") 
+  filter(team_type == "ICU")
 
 icu_ratio_row <- nrow(icu_ratio) + 2
 
@@ -40,8 +40,8 @@ icu_crisis <- icu_ratio %>%
   add_row(day = 1:chime_row) %>%
   fill(., 2:all_of(icu_ratio_row))
 
-gen_ratio <- team %>% 
-  filter(team_type == "General") 
+gen_ratio <- team %>%
+  filter(team_type == "General")
 
 gen_ratio_row <- nrow(gen_ratio) + 2
 
@@ -59,7 +59,7 @@ gen_crisis <- gen_ratio %>%
          team_type = "General Crisis") %>%
   pivot_wider(., id_cols = c("day", "team_type"), names_from = role, values_from = n_bed_per_person_crisis) %>%
   add_row(day = 1:chime_row) %>%
-  fill(., 2:all_of(gen_ratio_row)) 
+  fill(., 2:all_of(gen_ratio_row))
 
 # Append tables
 
@@ -86,7 +86,7 @@ chime_lookup <- chime_lookup %>%
 
 
 p = ggplot(chime_lookup %>%
-         filter(team_type == "ICU Crisis" | team_type == "General Crisis"), 
+         filter(team_type == "ICU Crisis" | team_type == "General Crisis"),
        aes(x = date, y = projected_bed_per_person, colour = role, group = role)) +
   geom_line() +
   labs(title = "Projected Staffing Needs: Crisis",

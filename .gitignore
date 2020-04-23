@@ -7,7 +7,6 @@
 
 # RStudio files
 .Rproj.user/
-*.Rproj
 
 # produced vignettes
 vignettes/*.html
@@ -15,7 +14,7 @@ vignettes/*.html
 # ignore generated html tex files,
 *.html
 *.tex
- 
+
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
@@ -31,7 +30,7 @@ Thumbs.db
 
 
 # Data files
-.rdata
+.RData
 
 #ignore cache
 *_cache
@@ -54,3 +53,4 @@ Backup of *.doc*
 # PowerPoint temporary
 ~$*.ppt*
 *.dcf
+packrat/lib*/
