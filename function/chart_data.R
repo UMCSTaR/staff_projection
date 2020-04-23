@@ -3,14 +3,14 @@ chart_data <- function(chime, ratio_table, capacity,
                        icu_perc,
                        capacity_perc,
                        advanced = TRUE) {
-  
+
   require(tidyverse)
-  
-  chime_long = chime %>% 
-    filter(date >= Sys.Date()) %>% 
+
+  chime_long = chime %>%
+    filter(date >= Sys.Date()) %>%
     rename(General = hospitalized, ICU = icu) %>%
     pivot_longer(c(ICU, General), names_to = 'team_type', values_to = 'n')
-  
+
   ratio_table_long = ratio_table %>%
     pivot_longer(
       c(n_bed_per_person, n_bed_per_person_crisis),
@@ -19,21 +19,21 @@ chart_data <- function(chime, ratio_table, capacity,
     ) %>%
     mutate(crisis_mode = if_else(str_detect(crisis_mode, 'crisis'),'Crisis','Normal'))
 
-  
+
   all = left_join(left_join(chime_long, ratio_table_long, by = 'team_type'), capacity, by = c("role"))
 
-  all_cov = all %>% 
+  all_cov = all %>%
     mutate(projected_bed_per_person = n / n_bed_per_person,
-           projected_bed_per_person = 
+           projected_bed_per_person =
              if_else(
                is.infinite(projected_bed_per_person),
                0,
                projected_bed_per_person
              ),
            n_staff_day = projected_bed_per_person*(24/shift_length_hr),
-           n_staff_week = n_staff_day*7/shift_per_week) 
-  
-  
+           n_staff_week = n_staff_day*7/shift_per_week)
+
+
   all_cov_and_non_cov = all_cov %>%
     mutate(
       non_cov_pt = ifelse(
@@ -50,13 +50,10 @@ chart_data <- function(chime, ratio_table, capacity,
                 n_staff_non_covid),
       n_staff_non_covid_day = n_staff_non_covid * (24 / shift_length_hr),
       n_staff_non_covid_week = n_staff_non_covid_day * 7 / shift_per_week,
-    ) 
-  
+    )
+
   if (advanced)
     all_cov_and_non_cov
    else
     all_cov
 }
-
-
-
