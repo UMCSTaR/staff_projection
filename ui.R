@@ -118,7 +118,8 @@ shinyUI(
                         
                         div(tableOutput("table_result_normal"), style = "font-size:120%")
                     ), 
-                    tabPanel("Crisis", 
+                    tabPanel(value = "Crisis",
+                             title = "Stretch",
                              column(width = 10,
                                     div(uiOutput("plot_crisis"), style = "height:450px")),
                              
@@ -250,8 +251,8 @@ shinyUI(
                            strong("Ratio (Normal): "),
                            "The patient:staff ratio (i.e. how many patients each staff member cares for)",
                            br(),
-                           strong("Ratio (Crisis): "),
-                           "The patient:staff ratio during a ‘crisis mode’ (i.e. the maximum number patients each staff member can care for)",
+                           strong("Ratio (Stretch): "),
+                           "The patient:staff ratio during a ‘Stretch mode’ (i.e. the maximum number patients each staff member can care for)",
                            br(),
                            br(),
                            strong("*"), em("Default patient-to-staff ratios are based on real staffing ratios at a collaborating academic medical center that has undertaken extensive emergency preparedness work for this pandemic.")

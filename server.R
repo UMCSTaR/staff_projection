@@ -182,7 +182,7 @@ shinyServer(
                         transmute(
                             Role = role,
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis)" = ratio_s,
+                            "Ratio (Stretch)" = ratio_s,
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
@@ -201,7 +201,7 @@ shinyServer(
                         transmute(
                             Role = role,
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis)" = ratio_s,
+                            "Ratio (Stretch)" = ratio_s,
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
                         ) %>%
@@ -234,7 +234,7 @@ shinyServer(
                     team_icu_react() %>%
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis)" = ratio_s,
+                            "Ratio (Stretch)" = ratio_s,
                             Role = role,
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
@@ -249,7 +249,7 @@ shinyServer(
                     team_gen_react() %>% 
                         rename(
                             "Ratio (Normal)" = ratio,
-                            "Ratio (Crisis)" = ratio_s,
+                            "Ratio (Stretch)" = ratio_s,
                             Role = role,
                             "Shift Length(hours)" = shift_length_hr,
                             "Number of Shifts/week" = shift_per_week
@@ -280,7 +280,7 @@ shinyServer(
                 team_icu_react() %>%
                     rename(
                         "Ratio (Normal)" = ratio,
-                        "Ratio (Crisis)" = ratio_s,
+                        "Ratio (Stretch)" = ratio_s,
                         Role = role,
                         "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
@@ -296,7 +296,7 @@ shinyServer(
                 team_gen_react() %>% 
                     rename(
                         "Ratio (Normal)" = ratio,
-                        "Ratio (Crisis)" = ratio_s,
+                        "Ratio (Stretch)" = ratio_s,
                         Role = role,
                         "Shift Length(hours)" = shift_length_hr,
                         "Number of Shifts/week" = shift_per_week
@@ -336,7 +336,7 @@ shinyServer(
                 mutate(team_type = "ICU") %>% 
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
-                       n_bed_per_person_crisis = "Ratio (Crisis)",
+                       n_bed_per_person_crisis = "Ratio (Stretch)",
                        shift_length_hr = "Shift Length(hours)",
                        shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
@@ -357,7 +357,7 @@ shinyServer(
                 mutate(team_type = "General") %>% 
                 rename(role = Role,
                        n_bed_per_person = "Ratio (Normal)" ,
-                       n_bed_per_person_crisis = "Ratio (Crisis)",
+                       n_bed_per_person_crisis = "Ratio (Stretch)",
                        shift_length_hr = "Shift Length(hours)",
                        shift_per_week = "Number of Shifts/week") %>% 
                 select(team_type, everything())
@@ -645,14 +645,14 @@ shinyServer(
                     mutate(team_type = "ICU") %>% 
                     rename(role = Role,
                            n_bed_per_person = "Ratio (Normal)" ,
-                           n_bed_per_person_crisis = "Ratio (Crisis)") %>% 
+                           n_bed_per_person_crisis = "Ratio (Stretch)") %>% 
                     select(team_type, everything())
                 
                 finalDF_non_icu <- hot_to_r(input$x2) %>% 
                     mutate(team_type = "General") %>% 
                     rename(role = Role,
                            n_bed_per_person = "Ratio (Normal)" ,
-                           n_bed_per_person_crisis = "Ratio (Crisis)") %>% 
+                           n_bed_per_person_crisis = "Ratio (Stretch)") %>% 
                     select(team_type, everything())
                 
                 
