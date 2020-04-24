@@ -85,18 +85,14 @@ ShinyApp searches for the following in the root folder:
     - Contains shinyUI function
 - styles.css
     - Used for global CSS styling 
-- debug.R
-    - What is this for?
 - staff_projection.Rproj
     - What is this for?
 - functions/
-    - What is the main idea for this folder?
+    - user defined functions that used in serve.R and UI.R
 - data/
-    - What is the main idea for this folder?
+    - default datasets, e.g default staffing ratios table, were used in the app
 - www/
     - Accessible to the users web browser (for assets).
-- old/
-    - What is the main idea for this folder?
 
 ## Further Information
 
