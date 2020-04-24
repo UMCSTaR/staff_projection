@@ -1,0 +1,5 @@
+lintr::lint("~/Documents/Applications/staffing_demand_calculator/ui.R")
+lintr::lint("~/Documents/Applications/staffing_demand_calculator/server.R")
+lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/chart_data.R")
+lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/max_table_under_plot.R")
+lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/plot_chart_data.R")
