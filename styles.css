@@ -9,6 +9,11 @@
     width: '100%';
 }
 
+.main-button:hover {
+    background-color: #013220; 
+    color: #fff;
+}
+
 /* Margins */
 .margin-top20 {
     margin-top: 20px;
