@@ -1,21 +1,26 @@
-plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduction`) ,mode = 'Normal', digits = 1, highcharter = TRUE) {
+plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduction`), mode = "Normal", digits = 1, highcharter = TRUE) {
   require(tidyverse)
   require(glue)
 
-  d_processed = .data %>%
+  d_processed <- .data %>%
     filter(crisis_mode == mode) %>%
     mutate_if(is.numeric, round, digits = digits) %>%
     rename_all(stringr::str_to_title) %>%
-    rename_all(stringr::str_replace_all, pattern = '_', replacement =' ') %>%
-    rename('Projected Number of Staff' = `Projected bed per person`,
-           'Staff Needed'= !!staff_needs) %>%
+    rename_all(stringr::str_replace_all, pattern = "_", replacement = " ") %>%
+    rename(
+      "Projected Number of Staff" = `Projected bed per person`,
+      "Staff Needed" = !!staff_needs
+    ) %>%
     select(Date, `Team type`, Role, `Staff Needed`, `Total employees at full capacity`)
 
-  d_processed <- as.data.frame(rbind(d_processed,
+  d_processed <- as.data.frame(rbind(
+    d_processed,
     d_processed %>% group_by(Date, Role) %>%
-      summarize(`Staff Needed` = sum(`Staff Needed`),
-                `Total employees at full capacity` = unique(`Total employees at full capacity`)) %>%
-      mutate(`Team type` = 'Total') %>% ungroup()
+      summarize(
+        `Staff Needed` = sum(`Staff Needed`),
+        `Total employees at full capacity` = unique(`Total employees at full capacity`)
+      ) %>%
+      mutate(`Team type` = "Total") %>% ungroup()
   )) %>%
     mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
 
@@ -27,7 +32,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   )
 
 
-  p = d_processed %>%
+  p <- d_processed %>%
     ggplot(
       aes(
         x = Date,
@@ -37,10 +42,10 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     ) +
     geom_line(aes(col = Role), show.legend = FALSE) +
     labs(
-      title   = paste("Projected Staffing Needs:", mode),
-      x       = "",
-      y       = "",
-      colour  = "Roles"
+      title = paste("Projected Staffing Needs:", mode),
+      x = "",
+      y = "",
+      colour = "Roles"
       # caption = "Estimates from CHIME and user-inputted ratios"
     ) +
     geom_hline(
@@ -55,7 +60,7 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
       linetype = "dashed"
     ) +
     scale_color_brewer(palette = "Paired") + # change if needed
-    facet_wrap(~ `Team type`, scales = "free", nrow = 3, labeller = as_labeller(team_type_name)) +
+    facet_wrap(~`Team type`, scales = "free", nrow = 3, labeller = as_labeller(team_type_name)) +
     theme_minimal() +
     theme(
       title = element_text(size = 10)
@@ -67,17 +72,21 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
   cols <- RColorBrewer::brewer.pal(10, "Paired")
   cols <- substr(cols, 0, 7)
 
-  high_chart_p = hchart(
+  high_chart_p <- hchart(
     d_processed %>%
       filter(`Team type` == "Total"),
-    type = 'line',
+    type = "line",
     hcaes(y = `Staff Needed`, group = Role, x = Date),
   ) %>%
-    hc_title(text = "Total Staffing Needs (ICU and Non-ICU)",
-             margin = 20, align = "left", style = list(fontWeight = "bold", fontSize = "1.5em")) %>%
-    hc_subtitle(text = "Hover over the plot to see your staffing needs in details.
+    hc_title(
+      text = "Total Staffing Needs (ICU and Non-ICU)",
+      margin = 20, align = "left", style = list(fontWeight = "bold", fontSize = "1.5em")
+    ) %>%
+    hc_subtitle(
+      text = "Hover over the plot to see your staffing needs in details.
                 Click the dropdown menu to the right for data/plot export.",
-             margin = 20, align = "left", style = list(fontSize = "1em")) %>%
+      margin = 20, align = "left", style = list(fontSize = "1em")
+    ) %>%
     hc_chart(backgroundColor = "white") %>%
     # hc_legend(align = "right", verticalAlign = "top",
     #           layout = "vertical", x = 0, y = 100) %>%
@@ -87,14 +96,15 @@ plot_chart_data <- function(.data, staff_needs =quo(`Accounting For Staff Reduct
     hc_legend(enabled = F) %>%
     hc_colors(cols) %>%
     hc_tooltip(table = TRUE, sort = TRUE, style = list(fontSize = "1em")) %>%
-                 # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
+    # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
     hc_exporting(enabled = TRUE) # enable exporting option
 
 
 
 
-  if (highcharter)
+  if (highcharter) {
     high_chart_p
-  else
+  } else {
     plotly::ggplotly(p, height = 450, width = 800)
+  }
 }
