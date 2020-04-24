@@ -56,6 +56,16 @@ devtools::install_github('m-clark/tidyext')
 #### Using shinyServer
 Instructions on how to run the application on a shiny server.
 
+## Styling
+
+This project includes the [styler package](https://github.com/r-lib/styler) to maintain consistent styles throughout the codebase. Before making any PRs please be sure to run the styler on your newly written code.
+
+Run the following in the R console:
+
+`source("tools/styler.R")`
+
+If you add new files or directories please include them in the above script.
+
 ## File Structure
 
 ShinyApp searches for the following in the root folder:
