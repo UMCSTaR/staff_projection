@@ -1,4 +1,5 @@
-[![COVID Staffing Project](https://koroid.com/wp-content/uploads/2020/04/logo-covid-staffing-project-@2x.png)](https://www.covidstaffing.org)
+[![COVID Staffing Project](logo-covid-staffing.png)](https://www.covidstaffing.org)
+
 
 # Staff Skill Projection
 
@@ -86,11 +87,13 @@ ShinyApp searches for the following in the root folder:
 - styles.css
     - Used for global CSS styling 
 - staff_projection.Rproj
-    - What is this for?
+    - Rstudio project
 - functions/
     - user defined functions that used in serve.R and UI.R
 - data/
     - default datasets, e.g default staffing ratios table, were used in the app
+- packrat/
+    - package mana
 - www/
     - Accessible to the users web browser (for assets).
 
