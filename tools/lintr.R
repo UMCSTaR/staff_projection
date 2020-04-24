@@ -1,5 +1,8 @@
-lintr::lint("~/Documents/Applications/staffing_demand_calculator/ui.R")
-lintr::lint("~/Documents/Applications/staffing_demand_calculator/server.R")
-lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/chart_data.R")
-lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/max_table_under_plot.R")
-lintr::lint("~/Documents/Applications/staffing_demand_calculator/functions/plot_chart_data.R")
+#!/usr/bin/env Rscript
+wd <- getwd()
+
+lintr::lint(file.path(wd, "ui.R"))
+lintr::lint(file.path(wd, "server.R"))
+lintr::lint(file.path(wd, "function", "chart_data.R"))
+lintr::lint(file.path(wd, "function", "max_table_under_plot.R"))
+lintr::lint(file.path(wd, "function", "plot_chart_data.R"))
