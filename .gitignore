@@ -54,3 +54,8 @@ Backup of *.doc*
 ~$*.ppt*
 *.dcf
 packrat/lib*/
+
+# personal files
+old/
+function/old/
+debug.R
