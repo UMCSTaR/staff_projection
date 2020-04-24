@@ -6,7 +6,7 @@
     background-color: #228B22;
     border-color: #2e6da4;
     align-self: center;
-    width: '100%';
+    width: 100px;
 }
 
 /* Margins */
@@ -42,4 +42,5 @@
 /* Tables & Graphs */
 .plot {
     height: 480px;
+    width: 600px;
 }

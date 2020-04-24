@@ -15,14 +15,19 @@ plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduc
 
   d_processed <- as.data.frame(rbind(
     d_processed,
-    d_processed %>% group_by(Date, Role) %>%
+    d_processed %>% 
+      group_by(Date, Role) %>%
       summarize(
         `Staff Needed` = sum(`Staff Needed`),
         `Total employees at full capacity` = unique(`Total employees at full capacity`)
       ) %>%
       mutate(`Team type` = "Total") %>% ungroup()
   )) %>%
-    mutate(`Team type` = factor(`Team type`, levels = c("Total", "General", "ICU"), ordered = T))
+    mutate(`Team type` = factor(
+      `Team type`,
+      levels = c("Total", "General", "ICU"),
+      ordered = T
+    ))
 
   # plotly
   team_type_name <- c(
@@ -46,7 +51,6 @@ plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduc
       x = "",
       y = "",
       colour = "Roles"
-      # caption = "Estimates from CHIME and user-inputted ratios"
     ) +
     geom_hline(
       data = subset(d_processed, `Team type` == "Total"),
