@@ -11,6 +11,7 @@ The COVID staffing projection tool can be used to calculate your hospital’s st
 - [Prerequisites](#prerequisites)
 - [Development Environment](#development-environment)
 - [Running](#running)
+    - [Using Packrat](#using-packrat)
     - [Using RStudio](#using-rstudio)
     - [Using shinyServer](#using-shinyserver)
 - [File Structure](#file-structure)
@@ -31,39 +32,17 @@ This should detail how to setup a local environment that enables developers to k
 
 ### Running
 
-The following packages should be added to an install script, along with their intended version, and references from there.
+#### Using Packrat
 
-Example
+To restore the current project you can run the following from within the R console:
+
 ```
-install.packages(c("package1", "package2"))
+install.packages("devtools")
+devtools::install_github("rstudio/packrat")
+packrat::restore()
 ```
 
-Imports
-- shiny
-- tidyverse
-- highcharter
-- rhandsontable
-- shinyjs
-- plotly
-- readxl
-
-Depends
-- glue
-- forcats
-- stringr
-- dplyr
-- purrr
-- readr
-- tidyr
-- tibble
-- ggplot2
-- stats
-- graphics
-- grDevices
-- utils
-- datasets
-- methods
-- base
+If you need to add packages to this project, always run `packrat::snapshot()` before committing. This will add any new dependencies to the packrat.lock file.
 
 #### Using RStudio
 To run the application locally, you can install the packages above in RStudio, and use the function `runApp()` to start.
@@ -85,7 +64,7 @@ ShinyApp searches for the following in the root folder:
 - ui.R
     - Contains shinyUI function
 - styles.css
-    - Used for global CSS styling 
+    - Used for global CSS styling
 - staff_projection.Rproj
     - Rstudio project
 - functions/
@@ -93,7 +72,7 @@ ShinyApp searches for the following in the root folder:
 - data/
     - default datasets, e.g default staffing ratios table, were used in the app
 - packrat/
-    - package mana
+    - used for project package management
 - www/
     - Accessible to the users web browser (for assets).
 
