@@ -186,7 +186,7 @@ Requires: ellipsis, magrittr, rlang, tibble
 
 Package: fs
 Source: CRAN
-Version: 1.3.2
+Version: 1.4.1
 Hash: 1cc0d485b7b553568e211d76b438c1e2
 Requires: Rcpp
 
@@ -369,7 +369,7 @@ Requires: colorspace
 
 Package: nlme
 Source: CRAN
-Version: 3.1-145
+Version: 3.1-147
 Hash: 4fe71e70108347d427da7b707f424c77
 Requires: lattice
 
