@@ -53,9 +53,13 @@ Backup of *.doc*
 # PowerPoint temporary
 ~$*.ppt*
 *.dcf
-packrat/lib*/
 
 # personal files
 old/
 function/old/
 debug.R
+
+# PackRat
+packrat/lib*/
+packrat/src*
+packrat/bundles*
