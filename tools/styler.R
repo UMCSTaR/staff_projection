@@ -1,5 +1,8 @@
+#!/usr/bin/env Rscript
 library("styler")
 
-style_dir("function")
-style_file("ui.R")
-style_file("server.R")
+wd <- getwd()
+
+style_dir(file.path(wd, "function/"))
+style_file(file.path(wd, "ui.R"))
+style_file(file.path(wd, "server.R"))
