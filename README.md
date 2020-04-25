@@ -14,6 +14,7 @@ The COVID staffing projection tool can be used to calculate your hospital’s st
     - [Using Packrat](#using-packrat)
     - [Using RStudio](#using-rstudio)
     - [Using shinyServer](#using-shinyserver)
+- [Styling](#styling)
 - [File Structure](#file-structure)
 - [Further Information](#further-information)
 - [License](#license)
@@ -42,7 +43,7 @@ devtools::install_github("rstudio/packrat")
 packrat::restore()
 ```
 
-If you need to add packages to this project, always run `packrat::snapshot()` before committing. This will add any new dependencies to the packrat.lock file.
+If you need to add packages to this project, always run `packrat::snapshot()` before committing and see [Styling](#styling). This will add any new dependencies to the packrat.lock file.
 
 #### Using RStudio
 To run the application locally, you can install the packages above in RStudio, and use the function `runApp()` to start.
@@ -64,7 +65,15 @@ Run the following in the R console:
 
 `source("tools/styler.R")`
 
-If you add new files or directories please include them in the above script.
+If you add new files or directories please include them in `tools/styler.R` and `tools/lintr.R` scripts. By default, the styler script includes everything under `/function` directory. The syntax used is:
+
+`wd = Current working directory`
+
+**Linter**
+`lintr::lint(file.path(wd, "folder1", "folder2", "file"))`
+
+**Styler**
+`style_file(file.path(wd, "file"))`
 
 ## File Structure
 
@@ -74,7 +83,7 @@ ShinyApp searches for the following in the root folder:
 - ui.R
     - Contains shinyUI function
 - styles.css
-    - Used for global CSS styling
+    - Used for class based global CSS styling
 - staff_projection.Rproj
     - Rstudio project
 - functions/

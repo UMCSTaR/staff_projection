@@ -15,7 +15,7 @@ plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduc
 
   d_processed <- as.data.frame(rbind(
     d_processed,
-    d_processed %>% 
+    d_processed %>%
       group_by(Date, Role) %>%
       summarize(
         `Staff Needed` = sum(`Staff Needed`),
