@@ -65,7 +65,7 @@ Run the following in the R console:
 
 `source("tools/styler.R")`
 
-If you add new files or directories please include them in `tools/styler.R` and `tools/lintr.R` script. By default the styler script includes everything under `/functions`. The syntax used is:
+If you add new files or directories please include them in `tools/styler.R` and `tools/lintr.R` scripts. By default, the styler script includes everything under `/function` directory. The syntax used is:
 
 `wd = Current working directory`
 
