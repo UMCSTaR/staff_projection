@@ -33,7 +33,7 @@ This should detail how to setup a local environment that enables developers to k
 
 ### Running
 
-#### Using Packrat
+#### Using Packrat (outside of R Studio)
 
 To restore the current project you can run the following from within the R console:
 
@@ -46,6 +46,7 @@ packrat::restore()
 If you need to add packages to this project, always run `packrat::snapshot()` before committing and see [Styling](#styling). This will add any new dependencies to the packrat.lock file.
 
 #### Using RStudio
+
 To run the application locally, you can install the packages above in RStudio, and use the function `runApp()` to start.
 
 Note: You may need to install **devtools** and **tidyext** from the console manually:
@@ -54,9 +55,6 @@ install.package("devtools")
 devtools::install_github('m-clark/tidyext')
 ```
 
-#### Using shinyServer
-Instructions on how to run the application on a shiny server.
-
 ## Styling
 
 This project includes the [styler package](https://github.com/r-lib/styler) to maintain consistent styles throughout the codebase. Before making any PRs please be sure to run the styler on your newly written code.
@@ -64,6 +62,10 @@ This project includes the [styler package](https://github.com/r-lib/styler) to m
 Run the following in the R console:
 
 `source("tools/styler.R")`
+
+Or Run in Bash, sh, zsh, etc
+
+`Rscript tools/styler.R`
 
 If you add new files or directories please include them in `tools/styler.R` and `tools/lintr.R` scripts. By default, the styler script includes everything under `/function` directory. The syntax used is:
 
@@ -87,13 +89,15 @@ ShinyApp searches for the following in the root folder:
 - staff_projection.Rproj
     - Rstudio project
 - functions/
-    - user defined functions that used in serve.R and UI.R
+    - Contains functions used in serve.R and UI.R
 - data/
     - default datasets, e.g default staffing ratios table, were used in the app
 - packrat/
     - used for project package management
 - www/
     - Accessible to the users web browser (for assets).
+- tools/
+    - provides the user tools for linting/styling. See [Styling](#styling).
 
 ## Further Information
 
