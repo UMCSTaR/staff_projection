@@ -1,6 +1,7 @@
 plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduction`), mode = "Normal", digits = 1, highcharter = TRUE) {
   require(tidyverse)
   require(glue)
+  require(highcharter)
 
   d_processed <- .data %>%
     filter(crisis_mode == mode) %>%
@@ -70,45 +71,41 @@ plot_chart_data <- function(.data, staff_needs = quo(`Accounting For Staff Reduc
       title = element_text(size = 10)
     )
 
-
-  # highcharter
-  # cols <- scico::scico(palette = "hawaii",begin = 0.1, end = 0.8, n = 10)
-  cols <- RColorBrewer::brewer.pal(10, "Paired")
-  cols <- substr(cols, 0, 7)
-
-  high_chart_p <- hchart(
-    d_processed %>%
-      filter(`Team type` == "Total"),
-    type = "line",
-    hcaes(y = `Staff Needed`, group = Role, x = Date),
-  ) %>%
-    hc_title(
-      text = "Total Staffing Needs (ICU and Non-ICU)",
-      margin = 20, align = "left", style = list(fontWeight = "bold", fontSize = "1.5em")
-    ) %>%
-    hc_subtitle(
-      text = "Hover over the plot to see your staffing needs in details.
-                Click the dropdown menu to the right for data/plot export.",
-      margin = 20, align = "left", style = list(fontSize = "1em")
-    ) %>%
-    hc_chart(backgroundColor = "white") %>%
-    # hc_legend(align = "right", verticalAlign = "top",
-    #           layout = "vertical", x = 0, y = 100) %>%
-    hc_add_theme(hc_theme_smpl()) %>%
-    hc_xAxis(title = "") %>%
-    hc_yAxis(title = "") %>%
-    hc_legend(enabled = F) %>%
-    hc_colors(cols) %>%
-    hc_tooltip(table = TRUE, sort = TRUE, style = list(fontSize = "1em")) %>%
-    # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
-    hc_exporting(enabled = TRUE) # enable exporting option
-
-
-
-
   if (highcharter) {
-    high_chart_p
-  } else {
-    plotly::ggplotly(p, height = 450, width = 800)
+    # cols <- scico::scico(palette = "hawaii",begin = 0.1, end = 0.8, n = 10)
+    cols <- RColorBrewer::brewer.pal(10, "Paired")
+    cols <- substr(cols, 0, 7)
+    
+    high_chart_p <- highchart() %>%
+      hc_add_series(
+        d_processed %>% filter(`Team type` == "Total"),
+        "line",
+        hcaes(y = `Staff Needed`, group = Role, x = Date)
+      ) %>%
+      hc_title(
+        text = "Total Staffing Needs (ICU and Non-ICU)",
+        margin = 20, align = "left", style = list(fontWeight = "bold", fontSize = "1.5em")
+      ) %>%
+      hc_subtitle(
+        text = "Hover over the plot to see your staffing needs in details.
+                Click the dropdown menu to the right for data/plot export.",
+        margin = 20, align = "left", style = list(fontSize = "1em")
+      ) %>%
+      hc_chart(backgroundColor = "white") %>%
+      # hc_legend(align = "right", verticalAlign = "top",
+      #           layout = "vertical", x = 0, y = 100) %>%
+      hc_add_theme(hc_theme_smpl()) %>%
+      hc_xAxis(title = "", type = "datetime") %>%
+      hc_yAxis(title = "") %>%
+      hc_legend(enabled = F) %>%
+      hc_colors(cols) %>%
+      hc_tooltip(table = TRUE, sort = TRUE, style = list(fontSize = "1em")) %>%
+      # positioner = JS("function () { return { x: 300, y: 45 }; }"))  %>%
+      hc_exporting(enabled = TRUE) # enable exporting option
+    
+    return(high_chart_p)
+  }
+  else {
+    return(plotly::ggplotly(p, height = 450, width = 800))
   }
 }
