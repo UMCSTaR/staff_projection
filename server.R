@@ -6,20 +6,16 @@ library(shinyjs)
 library(plotly)
 library(readxl)
 
-# read data -------
+# read data
 chime <- read_csv("./data/2020-04-08_projected_census.csv")
 team <- read_xlsx("./data/staff_table.xlsx", sheet = "updated_4_16") %>%
   mutate_if(is.numeric, as.integer)
 
-
-
 # read team ratio
-
 capacity_def <- team %>%
   select("role", "total_employees_at_full_capacity") %>%
   mutate(total_employees_at_full_capacity = as.integer(total_employees_at_full_capacity)) %>%
   distinct()
-
 
 # ICU
 team_icu <- team %>%
@@ -644,7 +640,6 @@ shinyServer(
       filename = function() {
         paste("chime_ratio_combined", ".csv", sep = "")
       },
-
       content = function(file) {
         write.csv(display_table(), file, row.names = FALSE)
       }
