@@ -7,7 +7,9 @@ library(plotly)
 library(readxl)
 
 # read data
-chime <- read_csv("./data/2020-04-08_projected_census.csv")
+chime <- read_csv("./data/2020-11-05_projected_census.csv") %>%
+  mutate(date = as.Date(date, format = "%y-%m-%d"))
+
 team <- read_xlsx("./data/staff_table.xlsx", sheet = "updated_4_16") %>%
   mutate_if(is.numeric, as.integer)
 
