@@ -16,7 +16,8 @@ max_table_under_plot <-
         names_from = team_type,
         values_from = !!total_staff_value
       ) %>%
-      tidyext::row_sums(General, ICU, varname = "all", na_rm = TRUE) %>%
+      # mutate(all = rowSums(c(General, ICU), na.rm = TRUE)) %>% 
+      rowwise() %>% mutate(all = sum(c(General, ICU))) %>% 
       mutate(all = as.integer(all)) %>%
       transmute(
         Role = role,

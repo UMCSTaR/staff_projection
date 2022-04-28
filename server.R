@@ -6,8 +6,11 @@ library(shinyjs)
 library(plotly)
 library(readxl)
 
+
 # read data
-chime <- read_csv("./data/2020-04-08_projected_census.csv")
+chime <- read_csv("./data/2020-04-08_projected_census.csv") %>% 
+  mutate(date = seq(Sys.Date(),Sys.Date()+117,by = 1)) %>% 
+  tidyr::replace_na(list(icu = 0, hospitalized =0, ventilated = 0)) 
 team <- read_xlsx("./data/staff_table.xlsx", sheet = "updated_4_16") %>%
   mutate_if(is.numeric, as.integer)
 
@@ -54,7 +57,7 @@ shinyServer(
       }
     })
 
-
+    
     # capacity_table <- reactive({
     #     if (is.null(input$team_in)) {
     #         capacity
@@ -137,7 +140,7 @@ shinyServer(
         )
       })
     )
-
+    
 
     # reset Chime table -----
     observeEvent(
@@ -645,7 +648,7 @@ shinyServer(
       }
     )
 
-
+    
 
     # output$downloadData_icu_ratio <- downloadHandler(
     #   filename = function() {
@@ -666,7 +669,6 @@ shinyServer(
     #     write.csv(norm_staff_table(), con)
     #   }
     # )
-
 
     output$downloadData_all_ratio <- downloadHandler(
       filename = function() {
@@ -695,6 +697,8 @@ shinyServer(
         all_ratio <- rbind(finalDF, finalDF_non_icu)
 
         writexl::write_xlsx(all_ratio, path = con)
+        
+        
       }
     )
   }
