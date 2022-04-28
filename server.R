@@ -562,6 +562,8 @@ shinyServer(
 
 
     observeEvent(input$advanced_census_input, {
+      # cat(file=stderr(), "drawing histogram with", as.character(display_table()), "bins", "\n")
+      
       if (input$advanced_census_input == TRUE) {
         # advanced inputs including non coivd
 
@@ -574,8 +576,7 @@ shinyServer(
           #              pull()> 0, "Your current inputs are not valid")
           # )
 
-
-          max_table_under_plot(
+        max_table_under_plot(
             display_table(),
             mode = "Normal",
             total_staff_value = quo(all_covd_non_covid_staff)
@@ -583,7 +584,6 @@ shinyServer(
             filter(day == max_date()) %>%
             select(-day)
         })
-
 
         output$table_result_crisis <- renderTable({
           max_table_under_plot(
@@ -604,7 +604,6 @@ shinyServer(
             filter(day == max_date()) %>%
             select(-day)
         })
-
 
         output$table_result_crisis <- renderTable({
           max_table_under_plot(
